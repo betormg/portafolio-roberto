@@ -1,0 +1,128 @@
+---
+/*
+  Barra de navegación fija, de vidrio oscuro, con brillo especular y refracción.
+  El punto lima marca en qué sección está la persona (lo calcula un IntersectionObserver).
+*/
+import { persona, secciones } from "../datos.js";
+---
+
+<header class="fixed inset-x-0 top-[14px] z-40">
+  <nav
+    aria-label="Principal"
+    class="vidrio especular refracta contenedor flex h-[48px] items-center justify-between !rounded-[6px] pl-[14px] pr-[7px]"
+  >
+    <a href="#inicio" class="group flex items-center gap-[14px]" aria-label={`${persona.nombre} ${persona.apellido}, inicio`}>
+      <span
+        class="grid size-[28px] place-items-center rounded-[4px] border border-white/30 font-display text-[15px] italic leading-none transition-colors group-hover:border-lima"
+        style="font-variation-settings: 'SOFT' 100, 'WONK' 1;"
+        aria-hidden="true">rm</span
+      >
+      <span class="etiqueta hidden !text-blanco/80 sm:inline">{persona.nombre} {persona.apellido}</span>
+    </a>
+
+    <ul class="hidden items-center md:flex">
+      {
+        secciones.map((s, i) => (
+          <li>
+            <a
+              href={`#${s.id}`}
+              data-enlace={s.id}
+              class="enlace-nav etiqueta relative flex h-[34px] items-center gap-[7px] rounded-[4px] px-[14px] !text-blanco/70 transition-colors hover:!text-blanco"
+            >
+              <span class="punto" aria-hidden="true" />
+              <span class="tabular-nums text-blanco/40">{String(i + 1).padStart(2, "0")}</span>
+              {s.nombre}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <!-- Celular: botón que despliega el menú -->
+    <button
+      type="button"
+      class="etiqueta flex h-[34px] items-center gap-[7px] rounded-[4px] px-[14px] !text-blanco md:hidden"
+      aria-expanded="false"
+      aria-controls="menu-movil"
+      data-boton-menu
+    >
+      <span class="relative block h-[8px] w-[14px]" aria-hidden="true">
+        <span class="raya absolute inset-x-0 top-0 h-px bg-current transition-transform"></span>
+        <span class="raya absolute inset-x-0 bottom-0 h-px bg-current transition-transform"></span>
+      </span>
+      Menú
+    </button>
+  </nav>
+
+  <div id="menu-movil" class="contenedor mt-[7px] md:hidden" hidden>
+    <ul class="vidrio !rounded-[6px] p-[7px]">
+      {
+        secciones.map((s, i) => (
+          <li>
+            <a href={`#${s.id}`} class="flex h-[48px] items-center gap-[14px] rounded-[4px] px-[14px] text-[17px] hover:bg-white/5">
+              <span class="etiqueta tabular-nums">{String(i + 1).padStart(2, "0")}</span>
+              {s.nombre}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</header>
+
+<style>
+  /* Punto de estado: vacío por defecto, lima cuando la sección está en pantalla. */
+  .punto {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    border: 1px solid rgb(245 247 242 / 0.3);
+    transition:
+      background-color 0.3s,
+      border-color 0.3s,
+      box-shadow 0.3s;
+  }
+  .enlace-nav:hover .punto {
+    border-color: var(--color-lima);
+  }
+  .enlace-nav[aria-current="true"] {
+    color: var(--color-blanco) !important;
+  }
+  .enlace-nav[aria-current="true"] .punto {
+    background: var(--color-lima);
+    border-color: var(--color-lima);
+    box-shadow: 0 0 8px rgb(183 216 140 / 0.7);
+  }
+  [aria-expanded="true"] .raya:first-child {
+    transform: translateY(3.5px) rotate(45deg);
+  }
+  [aria-expanded="true"] .raya:last-child {
+    transform: translateY(-3.5px) rotate(-45deg);
+  }
+</style>
+
+<script>
+  // Menú del celular: abre y cierra, y se cierra al elegir una sección o con Escape.
+  const boton = document.querySelector("[data-boton-menu]");
+  const menu = document.getElementById("menu-movil");
+  const alternar = (abrir) => {
+    boton.setAttribute("aria-expanded", String(abrir));
+    menu.hidden = !abrir;
+  };
+  boton.addEventListener("click", () => alternar(menu.hidden));
+  menu.addEventListener("click", (e) => e.target.closest("a") && alternar(false));
+  document.addEventListener("keydown", (e) => e.key === "Escape" && alternar(false));
+
+  // Sección activa: se marca la que ocupa la franja central de la pantalla.
+  const enlaces = document.querySelectorAll("[data-enlace]");
+  const observador = new IntersectionObserver(
+    (entradas) => {
+      entradas.forEach((entrada) => {
+        if (!entrada.isIntersecting) return;
+        enlaces.forEach((a) => a.setAttribute("aria-current", String(a.dataset.enlace === entrada.target.id)));
+      });
+    },
+    { rootMargin: "-45% 0px -50% 0px" },
+  );
+  document.querySelectorAll("main section[id]").forEach((s) => observador.observe(s));
+</script>

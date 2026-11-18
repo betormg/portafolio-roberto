@@ -1,0 +1,91 @@
+---
+/*
+  Layout base: metadatos, fuentes, el fondo fijo de Roberto, el filtro SVG de
+  refracción y los scripts globales (Lenis y el brillo del vidrio).
+*/
+import "@fontsource-variable/fraunces/full.css"; // incluye los ejes opsz, SOFT y WONK
+import "@fontsource/instrument-sans/400.css";
+import "@fontsource/instrument-sans/500.css";
+import "@fontsource/instrument-sans/600.css";
+import "@fontsource/jetbrains-mono/400.css";
+import "@fontsource/jetbrains-mono/500.css";
+import "../styles/global.css";
+import { meta } from "../datos.js";
+
+const { titulo = meta.titulo, descripcion = meta.descripcion } = Astro.props;
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{titulo}</title>
+    <meta name="description" content={descripcion} />
+    <meta name="theme-color" content="#000000" />
+    <meta property="og:title" content={titulo} />
+    <meta property="og:description" content={descripcion} />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="es_PY" />
+    <!-- TODO (paso 5): imagen para compartir en /public/og.png y la URL final del sitio -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+  </head>
+  <body class="overflow-x-hidden">
+    <a
+      href="#contenido"
+      class="etiqueta sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:bg-blanco focus:px-3 focus:text-tinta"
+      >Saltar al contenido</a
+    >
+
+    <!-- Fondo (diseño de Roberto): fijo a la pantalla y con el resplandor centrado. -->
+    <div class="fixed inset-0 -z-10 overflow-hidden bg-black" aria-hidden="true">
+      <div
+        class="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px]"
+      >
+      </div>
+      <div
+        class="absolute left-1/2 top-[-10%] h-[1000px] w-[1000px] -translate-x-1/2 rounded-full bg-[radial-gradient(circle_400px_at_50%_300px,#fbfbfb36,#000)]"
+      >
+      </div>
+    </div>
+
+    <!--
+      Filtro de refracción para el "liquid glass": el ruido (feTurbulence) desplaza
+      levemente los píxeles del fondo (feDisplacementMap), como el borde de un vidrio.
+    -->
+    <svg width="0" height="0" class="absolute" aria-hidden="true" focusable="false">
+      <filter id="filtro-refraccion" x="0%" y="0%" width="100%" height="100%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.004 0.006" numOctaves="1" seed="7" result="ruido" />
+        <feGaussianBlur in="ruido" stdDeviation="6" result="ruidoSuave" />
+        <feDisplacementMap in="SourceGraphic" in2="ruidoSuave" scale="9" xChannelSelector="R" yChannelSelector="G" />
+      </filter>
+    </svg>
+
+    <slot />
+
+    <script>
+      import { iniciarLenis } from "../scripts/lenis.js";
+
+      iniciarLenis();
+
+      // La refracción SVG dentro de backdrop-filter solo funciona bien en Chromium.
+      const esChromium = navigator.userAgentData?.brands?.some((b) => b.brand === "Chromium");
+      if (esChromium) document.documentElement.classList.add("refraccion");
+
+      // Brillo especular: cada panel .especular recibe la posición del mouse en variables CSS.
+      const puntero = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+      if (puntero) {
+        document.querySelectorAll(".especular").forEach((panel) => {
+          panel.addEventListener("pointermove", (e) => {
+            const r = panel.getBoundingClientRect();
+            panel.style.setProperty("--luz-x", `${e.clientX - r.left}px`);
+            panel.style.setProperty("--luz-y", `${e.clientY - r.top}px`);
+            panel.style.setProperty("--luz-o", "1");
+          });
+          panel.addEventListener("pointerleave", () => panel.style.setProperty("--luz-o", "0"));
+        });
+      }
+    </script>
+  </body>
+</html>
