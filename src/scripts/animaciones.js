@@ -100,6 +100,35 @@ export function animarArbol(ajustarEscala) {
 }
 
 /*
+  Proyectos: cada proyecto aparece al entrar, y las tablas del modelo de datos
+  se "arman" una por una.
+*/
+export function animarProyectos() {
+  const mm = gsap.matchMedia();
+
+  mm.add("(prefers-reduced-motion: no-preference)", () => {
+    gsap.utils.toArray("[data-proyecto]").forEach((proyecto) => {
+      gsap.from(proyecto, {
+        autoAlpha: 0,
+        y: 32,
+        duration: 0.9,
+        ease: "power3.out",
+        scrollTrigger: { trigger: proyecto, start: "top 80%", once: true },
+      });
+    });
+    gsap.from("[data-tabla]", {
+      autoAlpha: 0,
+      y: 12,
+      duration: 0.6,
+      ease: "power2.out",
+      stagger: 0.1,
+      clearProps: "transform", // sin transform queda libre el resaltado al pasar el mouse
+      scrollTrigger: { trigger: "[data-modelo]", start: "top 80%", once: true },
+    });
+  });
+}
+
+/*
   Trayectoria: el riel se dibuja a medida que se baja (scrub = atado al scroll) y cada
   hito aparece una sola vez al entrar en pantalla.
 */

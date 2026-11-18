@@ -91,23 +91,86 @@ export const proyectos = [
   {
     id: "proyecto-lo-de-carmi",
     titulo: "Sistema de pedidos de Lo de Carmi Resto Bar",
-    problema: "Caja digital para tomar pedidos, controlar el stock del día y saber qué se vende.",
+    problema:
+      "El local necesitaba tomar pedidos, cobrar y ver las ventas del día desde una compu o un celular, sin impresora.",
+    queHace: "Caja digital para tomar pedidos, controlar el stock del día y saber qué se vende.",
     funciones: [
       "Login",
       "Menú",
-      "Stock",
+      "Stock del día",
       "Caja con ticket digital compartible por WhatsApp",
       "Pedidos del día",
       "Reportes",
     ],
-    tecnologias: ["JavaScript", "Vite", "Supabase (PostgreSQL con seguridad por filas)", "Vercel"],
+    tecnologias: ["JavaScript", "Vite", "Supabase", "PostgreSQL con seguridad por filas", "Vercel"],
     nota: "No tiene demo pública porque requiere inicio de sesión.",
+    // Capturas: [{ src: "/capturas/caja.webp", alt: "...", ancho: 1280, alto: 800 }], siempre con datos de prueba.
     capturas: [], // TODO: capturas en WebP con datos de prueba, en /public/capturas
     estado: "Versión 1 terminada",
     link: "", // TODO: link del repositorio (hoy es privado)
     grupal: false,
+
+    // Modelo de datos real de la base en Supabase (se dibuja en el marco del proyecto).
+    modelo: {
+      tablas: [
+        {
+          nombre: "menu_items",
+          campos: [
+            { nombre: "id", clave: "PK" },
+            { nombre: "name" },
+            { nombre: "category" },
+            { nombre: "price" },
+            { nombre: "active" },
+          ],
+        },
+        {
+          nombre: "daily_stock",
+          campos: [
+            { nombre: "stock_date", clave: "PK" },
+            { nombre: "item_id", clave: "FK", apunta: "menu_items" },
+            { nombre: "qty_initial" },
+            { nombre: "qty_sold" },
+          ],
+        },
+        {
+          nombre: "order_items",
+          campos: [
+            { nombre: "id", clave: "PK" },
+            { nombre: "order_id", clave: "FK", apunta: "orders" },
+            { nombre: "item_id", clave: "FK", apunta: "menu_items" },
+            { nombre: "qty" },
+            { nombre: "unit_price" },
+          ],
+        },
+        {
+          nombre: "orders",
+          campos: [
+            { nombre: "id", clave: "PK" },
+            { nombre: "ticket_no" },
+            { nombre: "status" },
+            { nombre: "channel" },
+            { nombre: "payment_method" },
+            { nombre: "total" },
+          ],
+        },
+      ],
+      funciones: [
+        { nombre: "create_order()", detalle: "Asigna el número de ticket, toma el precio de la base y descuenta stock." },
+        { nombre: "cancel_order()", detalle: "Anula el pedido y devuelve el stock." },
+        { nombre: "set_daily_stock()", detalle: "Carga las porciones del día." },
+      ],
+      seguridad: "RLS: solo usuarios autenticados",
+      leyenda: "Las cuatro tablas de la base, con sus campos principales, y las funciones que usa la caja.",
+    },
   },
-  // TODO: proyecto nuevo que reemplaza al del Complejo Santa Teresa (se define con Roberto).
+  {
+    // TODO: proyecto nuevo que reemplaza al del Complejo Santa Teresa. Completar cuando esté definido.
+    id: "proyecto-2",
+    enProceso: true,
+    titulo: "Segundo proyecto",
+    queHace: "Un proyecto de bases de datos que estoy preparando. Pronto va a estar acá.",
+    estado: "En proceso",
+  },
 ];
 
 /*

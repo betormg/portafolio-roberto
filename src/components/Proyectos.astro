@@ -1,10 +1,229 @@
 ---
-// Sección provisoria: se construye en el paso 4.
+/*
+  Proyectos.
+  El principal ocupa todo el ancho: a la izquierda el problema, qué hace y con qué;
+  a la derecha un marco de vidrio blanco con el modelo de datos real de la base.
+  Si en datos.js se cargan capturas, aparecen debajo del modelo (WebP, carga diferida).
+  Los proyectos marcados "enProceso" se muestran como un espacio reservado, sin inventar detalles.
+*/
+import { proyectos } from "../datos.js";
+
+const indice = (i) => `P—${String(i + 1).padStart(2, "0")}`;
 ---
 
-<section id="proyectos" class="min-h-[60vh] border-t border-white/10 py-[96px]">
+<section id="proyectos" class="relative border-t border-white/10 py-[96px] lg:py-[144px]">
   <div class="contenedor">
     <p class="etiqueta"><span class="text-lima">02</span> Proyectos</p>
-    <p class="mt-[24px] max-w-[420px] text-blanco/50">En construcción (paso 4).</p>
+    <h2
+      class="mt-[24px] font-display text-[clamp(44px,6vw,72px)] font-[380] leading-[1] tracking-[-0.03em]"
+      style="font-variation-settings: 'opsz' 144, 'SOFT' 30;"
+    >
+      Lo que <span class="italic text-blanco/80" style="font-variation-settings: 'opsz' 144, 'SOFT' 100, 'WONK' 1;">construí</span>
+    </h2>
+
+    {
+      proyectos.map((p, i) =>
+        p.enProceso ? (
+          /* ---------- Proyecto en proceso: espacio reservado ---------- */
+          <article
+            id={p.id}
+            class="reservado relative mt-[96px] scroll-mt-[96px] rounded-[8px] p-[21px] lg:ml-[calc((100%+28px)*5/12)] lg:max-w-[504px] lg:p-[28px]"
+            data-proyecto
+          >
+            <div class="flex items-center gap-[14px]">
+              <span class="etiqueta tabular-nums">{indice(i)}</span>
+              <span class="inline-flex h-[24px] items-center gap-[7px] rounded-[4px] border border-white/25 px-[9px] font-mono text-[11px] uppercase tracking-[0.06em] text-blanco/80">
+                <span class="size-[7px] rounded-full border-[1.5px] border-lima" aria-hidden="true" />
+                {p.estado}
+              </span>
+            </div>
+            <h3
+              class="mt-[24px] font-display text-[28px] font-[400] italic leading-[32px] text-blanco/75"
+              style="font-variation-settings: 'opsz' 72, 'SOFT' 100;"
+            >
+              {p.titulo}
+            </h3>
+            <p class="mt-[8px] text-[16px] text-blanco/65">{p.queHace}</p>
+          </article>
+        ) : (
+          /* ---------- Proyecto completo ---------- */
+          <article id={p.id} class="mt-[72px] grid scroll-mt-[96px] gap-y-[48px] lg:grid-cols-12 lg:gap-x-[28px]" data-proyecto>
+            <!-- Texto -->
+            <div class="lg:col-span-5">
+              <div class="flex flex-wrap items-center gap-[14px]">
+                <span class="etiqueta tabular-nums">{indice(i)}</span>
+                <span class="inline-flex h-[24px] items-center gap-[7px] rounded-[4px] border border-white/25 px-[9px] font-mono text-[11px] uppercase tracking-[0.06em] text-blanco">
+                  <span class="size-[7px] rounded-full bg-lima shadow-[0_0_6px_rgb(183_216_140/.6)]" aria-hidden="true" />
+                  {p.estado}
+                </span>
+                {p.grupal && <span class="etiqueta">Proyecto grupal</span>}
+              </div>
+
+              <h3
+                class="mt-[24px] font-display text-[clamp(32px,3.4vw,44px)] font-[400] leading-[1.08] tracking-[-0.02em]"
+                style="font-variation-settings: 'opsz' 96, 'SOFT' 30;"
+              >
+                {p.titulo}
+              </h3>
+
+              <dl class="mt-[36px] grid gap-y-[24px]">
+                <div>
+                  <dt class="etiqueta">El problema</dt>
+                  <dd class="mt-[4px] text-[17px] leading-[26px] text-blanco/85">{p.problema}</dd>
+                </div>
+                <div>
+                  <dt class="etiqueta">Qué hace</dt>
+                  <dd class="mt-[4px] text-[17px] leading-[26px] text-blanco/85">{p.queHace}</dd>
+                </div>
+                {p.rol && (
+                  <div>
+                    <dt class="etiqueta">Mi parte</dt>
+                    <dd class="mt-[4px] text-[17px] leading-[26px] text-blanco/85">{p.rol}</dd>
+                  </div>
+                )}
+                <div>
+                  <dt class="etiqueta">Funciones</dt>
+                  <dd>
+                    <ol class="mt-[6px] grid border-t border-white/10 sm:grid-cols-2 sm:gap-x-[28px]">
+                      {p.funciones.map((f, n) => (
+                        <li class="flex gap-[12px] border-b border-white/10 py-[8px] text-[15px] leading-[22px] text-blanco/80">
+                          <span class="pt-[1px] font-mono text-[11px] tabular-nums text-blanco/45">{String(n + 1).padStart(2, "0")}</span>
+                          {f}
+                        </li>
+                      ))}
+                    </ol>
+                  </dd>
+                </div>
+                <div>
+                  <dt class="etiqueta">Tecnologías</dt>
+                  <dd>
+                    <ul class="mt-[8px] flex flex-wrap gap-[7px]">
+                      {p.tecnologias.map((t) => (
+                        <li class="rounded-[4px] border border-white/20 px-[9px] py-[2px] font-mono text-[12px] leading-[20px] text-blanco/85">{t}</li>
+                      ))}
+                    </ul>
+                  </dd>
+                </div>
+              </dl>
+
+              <div class="mt-[36px] flex flex-wrap items-center gap-x-[28px] gap-y-[12px] border-t border-white/10 pt-[16px]">
+                {p.link ? (
+                  <a href={p.link} target="_blank" rel="noopener noreferrer" class="subrayado text-[15px] text-blanco">
+                    Ver repositorio<span class="sr-only"> (se abre en otra pestaña)</span> ↗
+                  </a>
+                ) : (
+                  <span class="etiqueta">Repositorio privado</span>
+                )}
+                {p.nota && <p class="text-[14px] leading-[20px] text-blanco/60">{p.nota}</p>}
+              </div>
+            </div>
+
+            <!-- Marco: modelo de datos y capturas -->
+            {p.modelo && (
+              <figure class="lg:col-span-7 lg:col-start-6 lg:pt-[48px]">
+                <div class="vidrio vidrio--blanco relative p-[14px] sm:p-[21px]">
+                  <header class="flex flex-wrap items-baseline justify-between gap-x-[14px] font-mono text-[11px] uppercase tracking-[0.06em] text-tinta/70">
+                    <span>Fig. 02 — Modelo de datos</span>
+                    <span>Supabase · PostgreSQL</span>
+                  </header>
+
+                  <!-- Tablas: al pasar el mouse por una clave foránea, se marca la tabla a la que apunta -->
+                  <div class="mt-[14px] grid gap-[14px] sm:grid-cols-2" data-modelo>
+                    {p.modelo.tablas.map((tabla) => (
+                      <div class="tabla overflow-hidden rounded-[4px] border border-black bg-white/70" data-tabla={tabla.nombre}>
+                        <p class="bg-tinta px-[10px] py-[3px] font-mono text-[12px] leading-[20px] text-blanco">{tabla.nombre}</p>
+                        <ul class="divide-y divide-black/10">
+                          {tabla.campos.map((c) => (
+                            <li
+                              class:list={["campo flex items-center gap-[8px] px-[10px] py-[3px] font-mono text-[12px] leading-[18px]", c.apunta && "cursor-default"]}
+                              data-apunta={c.apunta}
+                            >
+                              <span
+                                class:list={[
+                                  "w-[22px] shrink-0 text-[10px]",
+                                  c.clave === "PK" ? "font-medium text-tinta" : c.clave === "FK" ? "text-bosque-claro" : "text-transparent",
+                                ]}
+                              >
+                                {c.clave ?? "·"}
+                              </span>
+                              <span class="text-tinta">{c.nombre}</span>
+                              {c.apunta && <span class="ml-auto text-[11px] text-tinta/60">→ {c.apunta}</span>}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
+                  </div>
+
+                  <!-- Funciones de la base y seguridad -->
+                  <div class="mt-[14px] rounded-[4px] border border-black/25 px-[10px] py-[6px]">
+                    <ul class="divide-y divide-black/10">
+                      {p.modelo.funciones.map((f) => (
+                        <li class="grid gap-x-[14px] py-[5px] text-[13px] leading-[18px] text-tinta/80 sm:grid-cols-[150px_1fr]">
+                          <span class="font-mono text-[12px] text-tinta">{f.nombre}</span>
+                          {f.detalle}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <p class="mt-[12px] flex items-center gap-[8px] font-mono text-[11px] uppercase tracking-[0.06em] text-tinta/75">
+                    <span class="size-[7px] rounded-full bg-lima ring-1 ring-black" aria-hidden="true" />
+                    {p.modelo.seguridad}
+                  </p>
+                </div>
+
+                {p.capturas?.length > 0 && (
+                  <ul class="mt-[14px] grid gap-[14px] sm:grid-cols-2">
+                    {p.capturas.map((c) => (
+                      <li class="overflow-hidden rounded-[8px] border border-white/20 bg-white/[.04] p-[7px]">
+                        <img src={c.src} alt={c.alt} width={c.ancho} height={c.alto} loading="lazy" decoding="async" class="block h-auto w-full rounded-[4px]" />
+                      </li>
+                    ))}
+                  </ul>
+                )}
+
+                <figcaption class="mt-[12px] text-[14px] leading-[20px] text-blanco/60">
+                  {p.modelo.leyenda}
+                </figcaption>
+              </figure>
+            )}
+          </article>
+        ),
+      )
+    }
   </div>
 </section>
+
+<style>
+  /* Espacio reservado: borde punteado, como un lote marcado para construir. */
+  .reservado {
+    border: 1px dashed rgb(255 255 255 / 0.28);
+    background: rgb(255 255 255 / 0.02);
+  }
+
+  .tabla {
+    transition:
+      box-shadow 0.25s,
+      transform 0.25s;
+  }
+  .tabla.destacada {
+    box-shadow: 0 0 0 3px var(--color-lima);
+  }
+  .campo[data-apunta]:hover {
+    background: rgb(183 216 140 / 0.35);
+  }
+</style>
+
+<script>
+  import { animarProyectos } from "../scripts/animaciones.js";
+
+  // Al pasar el mouse por una clave foránea (FK), se resalta la tabla a la que apunta.
+  document.querySelectorAll("[data-modelo] [data-apunta]").forEach((campo) => {
+    const destino = document.querySelector(`[data-tabla="${campo.dataset.apunta}"]`);
+    if (!destino) return;
+    campo.addEventListener("mouseenter", () => destino.classList.add("destacada"));
+    campo.addEventListener("mouseleave", () => destino.classList.remove("destacada"));
+  });
+
+  animarProyectos();
+</script>
