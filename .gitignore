@@ -25,3 +25,5 @@ pnpm-debug.log*
 
 # capturas de pruebas del navegador
 .playwright-mcp/
+.vercel
+.env*
