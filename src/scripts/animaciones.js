@@ -3,6 +3,53 @@
   NO se pidió movimiento reducido; en ese caso el contenido queda visible tal cual.
 */
 import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
+
+/*
+  Trayectoria: el riel se dibuja a medida que se baja (scrub = atado al scroll) y cada
+  hito aparece una sola vez al entrar en pantalla.
+*/
+export function animarTrayectoria() {
+  const mm = gsap.matchMedia();
+
+  mm.add("(prefers-reduced-motion: no-preference)", () => {
+    gsap.from("[data-riel]", {
+      scaleY: 0,
+      ease: "none",
+      scrollTrigger: { trigger: "[data-linea]", start: "top 70%", end: "bottom 60%", scrub: 0.6 },
+    });
+
+    gsap.utils.toArray("[data-hito]").forEach((hito) => {
+      gsap.from(hito, {
+        autoAlpha: 0,
+        y: 24,
+        duration: 0.8,
+        ease: "power3.out",
+        scrollTrigger: { trigger: hito, start: "top 82%", once: true },
+      });
+    });
+  });
+}
+
+/*
+  Certificados: las tres tarjetas entran escalonadas, una detrás de otra.
+*/
+export function animarCertificados() {
+  const mm = gsap.matchMedia();
+
+  mm.add("(prefers-reduced-motion: no-preference)", () => {
+    gsap.from("[data-credencial]", {
+      autoAlpha: 0,
+      y: 32,
+      duration: 0.8,
+      ease: "power3.out",
+      stagger: 0.12,
+      scrollTrigger: { trigger: "[data-credenciales]", start: "top 80%", once: true },
+    });
+  });
+}
 
 export function animarPortada() {
   const mm = gsap.matchMedia();

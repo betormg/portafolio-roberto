@@ -1,10 +1,116 @@
 ---
-// Sección provisoria: se construye en el paso 2.
+/*
+  Trayectoria: una sola línea de tiempo con experiencia y educación mezcladas por fecha.
+  La columna izquierda (título e idiomas) queda fija mientras se recorre la derecha.
+  Los nodos distinguen el tipo: cuadrado = experiencia, círculo = educación,
+  lima = sigue en curso.
+*/
+import { trayectoria, idiomas, referencias } from "../datos.js";
 ---
 
-<section id="trayectoria" class="min-h-[60vh] border-t border-white/10 py-[96px]">
-  <div class="contenedor">
-    <p class="etiqueta"><span class="text-lima">03</span> Trayectoria</p>
-    <p class="mt-[24px] max-w-[420px] text-blanco/50">En construcción (paso 2).</p>
+<section id="trayectoria" class="relative border-t border-white/10 py-[96px] lg:py-[144px]">
+  <div class="contenedor grid gap-y-[72px] lg:grid-cols-12 lg:gap-x-[28px]">
+    <!-- Columna fija: título e idiomas -->
+    <div class="lg:col-span-4">
+      <div class="lg:sticky lg:top-[120px]">
+        <p class="etiqueta"><span class="text-lima">03</span> Trayectoria</p>
+        <h2
+          class="mt-[24px] font-display text-[clamp(44px,6vw,72px)] font-[380] leading-[1] tracking-[-0.03em]"
+          style="font-variation-settings: 'opsz' 144, 'SOFT' 30;"
+        >
+          Trabajo <span class="italic text-blanco/80" style="font-variation-settings: 'opsz' 144, 'SOFT' 100, 'WONK' 1;">y estudio</span>
+        </h2>
+
+        <!-- Idiomas: tres indicadores por idioma, rellenos según el nivel -->
+        <div class="mt-[48px] max-w-[336px]">
+          <h3 class="etiqueta border-b border-white/15 pb-[11px]">Idiomas</h3>
+          <ul>
+            {
+              idiomas.map((idioma) => (
+                <li class="grid grid-cols-[1fr_auto_84px] items-center gap-x-[14px] border-b border-white/10 py-[11px]">
+                  <span class="text-[16px]">{idioma.nombre}</span>
+                  <span class="flex gap-[4px]" aria-hidden="true">
+                    {[1, 2, 3].map((n) => (
+                      <span class:list={["h-[4px] w-[14px] rounded-[1px]", n <= idioma.nivel ? "bg-blanco" : "border border-white/25"]} />
+                    ))}
+                  </span>
+                  <span class="etiqueta text-right">{idioma.etiqueta}</span>
+                </li>
+              ))
+            }
+          </ul>
+          <p class="etiqueta mt-[24px] !normal-case !tracking-normal !text-blanco/55">{referencias}.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Línea de tiempo -->
+    <ol class="linea relative lg:col-span-7 lg:col-start-6" data-linea>
+      <!-- El riel: una línea fina que se dibuja con el scroll -->
+      <span class="riel absolute bottom-[12px] left-[6px] top-[12px] w-px origin-top bg-white/25 sm:left-[132px]" aria-hidden="true" data-riel></span>
+
+      {
+        trayectoria.map((item) => (
+          <li class="hito group relative grid pb-[48px] pl-[34px] last:pb-0 sm:grid-cols-[112px_1fr] sm:gap-x-[48px] sm:pl-0" data-hito>
+            <!-- Fechas, en monoespaciada -->
+            <p class="etiqueta tabular-nums sm:pt-[3px] sm:text-right">
+              <span class="sm:block">{item.desde}</span>
+              <span class="hidden text-blanco/40 sm:block">↓</span>
+              <span class="sm:hidden"> – </span>
+              <span class={item.actual ? "text-lima" : ""}>{item.hasta}</span>
+            </p>
+
+            <!-- Nodo sobre el riel -->
+            <span
+              class:list={[
+                "nodo absolute left-[1px] top-[8px] size-[11px] border bg-black transition-[background-color,border-color,box-shadow] duration-300 sm:left-[127px]",
+                item.tipo === "Educación" ? "rounded-full" : "rounded-[2px]",
+                item.actual ? "border-lima bg-lima shadow-[0_0_10px_rgb(183_216_140/.7)]" : "border-white/70",
+              ]}
+              aria-hidden="true"
+            />
+
+            <div>
+              <p class="etiqueta">
+                {item.tipo}
+                {item.ciudad && <span class="text-blanco/40"> · {item.ciudad}</span>}
+              </p>
+              <h3
+                class="mt-[6px] font-display text-[26px] font-[420] leading-[30px] tracking-[-0.01em] sm:text-[30px] sm:leading-[36px]"
+                style="font-variation-settings: 'opsz' 72;"
+              >
+                {item.rol}
+              </h3>
+              <p class="mt-[6px] text-[16px] text-blanco/80">
+                {item.lugar}
+                {item.detalle && <span class="text-blanco/55"> · {item.detalle}</span>}
+              </p>
+              {item.tareas && (
+                <ul class="mt-[12px] grid gap-x-[28px] text-[15px] leading-[24px] text-blanco/70 md:grid-cols-2">
+                  {item.tareas.map((t) => (
+                    <li class="relative pl-[21px] before:absolute before:left-0 before:top-[11px] before:h-px before:w-[9px] before:bg-white/35">
+                      {t}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </li>
+        ))
+      }
+    </ol>
   </div>
 </section>
+
+<style>
+  /* Al pasar el mouse por un hito, su nodo se enciende en lima. */
+  .hito:hover .nodo {
+    border-color: var(--color-lima);
+    box-shadow: 0 0 0 4px rgb(183 216 140 / 0.15);
+  }
+</style>
+
+<script>
+  import { animarTrayectoria } from "../scripts/animaciones.js";
+  animarTrayectoria();
+</script>

@@ -1,10 +1,123 @@
 ---
-// Sección provisoria: se construye en el paso 2.
+/*
+  Certificados y cursos: tres "credenciales" con forma de talón, con muescas a los
+  costados y una línea punteada, como un comprobante que se corta.
+  El certificado va en vidrio blanco (es el principal); los cursos, en contorno oscuro.
+  Solo la tarjeta blanca usa backdrop-filter, para cuidar el rendimiento en celulares.
+*/
+import { certificados } from "../datos.js";
 ---
 
-<section id="certificados" class="min-h-[60vh] border-t border-white/10 py-[96px]">
+<section id="certificados" class="relative border-t border-white/10 py-[96px] lg:py-[144px]">
   <div class="contenedor">
-    <p class="etiqueta"><span class="text-lima">04</span> Certificados y cursos</p>
-    <p class="mt-[24px] max-w-[420px] text-blanco/50">En construcción (paso 2).</p>
+    <div class="grid gap-y-[24px] lg:grid-cols-12 lg:gap-x-[28px]">
+      <div class="lg:col-span-6">
+        <p class="etiqueta"><span class="text-lima">04</span> Certificados y cursos</p>
+        <h2
+          class="mt-[24px] font-display text-[clamp(44px,6vw,72px)] font-[380] leading-[1] tracking-[-0.03em]"
+          style="font-variation-settings: 'opsz' 144, 'SOFT' 30;"
+        >
+          Lo que sigo <span class="italic text-blanco/80" style="font-variation-settings: 'opsz' 144, 'SOFT' 100, 'WONK' 1;">estudiando</span>
+        </h2>
+      </div>
+      <p class="max-w-[392px] text-[16px] text-blanco/70 lg:col-span-4 lg:col-start-9 lg:self-end">
+        Formación complementaria a la carrera, en redes, seguridad e inteligencia artificial.
+      </p>
+    </div>
+
+    <ul class="mt-[72px] grid gap-[28px] md:grid-cols-3" data-credenciales>
+      {
+        certificados.map((c) => {
+          const principal = c.tipo === "Certificado";
+          return (
+            <li id={c.id} class="scroll-mt-[96px]" data-credencial>
+              <article
+                class:list={[
+                  "credencial group relative flex h-full flex-col rounded-[8px] border",
+                  principal ? "vidrio vidrio--blanco" : "border-white/20 bg-white/[.03] text-blanco",
+                ]}
+              >
+                <!-- Parte superior: tipo y año -->
+                <div class="flex items-center justify-between px-[21px] pt-[21px]">
+                  <span
+                    class:list={[
+                      "inline-flex h-[24px] items-center gap-[7px] rounded-[4px] border px-[9px] font-mono text-[11px] uppercase tracking-[0.06em]",
+                      principal ? "border-black text-tinta" : "border-white/30 text-blanco/80",
+                    ]}
+                  >
+                    <span class:list={["size-[6px] rounded-full", principal ? "bg-lima ring-1 ring-black" : "border border-lima"]} aria-hidden="true" />
+                    {c.tipo}
+                  </span>
+                  <span class:list={["font-mono text-[12px] tabular-nums", principal ? "text-tinta/70" : "text-blanco/55"]}>{c.anio}</span>
+                </div>
+
+                <div class="flex-1 px-[21px] pb-[24px] pt-[48px]">
+                  <p class:list={["font-mono text-[11px] uppercase tracking-[0.06em]", principal ? "text-tinta/70" : "text-blanco/60"]}>{c.emisor}</p>
+                  <h3
+                    class="mt-[8px] font-display text-[28px] font-[420] leading-[32px] tracking-[-0.01em]"
+                    style="font-variation-settings: 'opsz' 72;"
+                  >
+                    {c.nombre}
+                  </h3>
+                </div>
+
+                <!-- Línea de corte del talón -->
+                <div class="corte relative mx-[14px] h-px" aria-hidden="true" />
+
+                <!-- Talón: tema y verificación -->
+                <div class="flex min-h-[48px] items-center justify-between gap-[14px] px-[21px] py-[12px]">
+                  <span class:list={["font-mono text-[11px] uppercase tracking-[0.06em]", principal ? "text-tinta/70" : "text-blanco/60"]}>
+                    Tema · {c.tema}
+                  </span>
+                  {c.verificacion && (
+                    <a
+                      href={c.verificacion}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="subrayado shrink-0 text-[14px] font-medium"
+                    >
+                      Verificar<span class="sr-only"> {c.nombre} (se abre en otra pestaña)</span> ↗
+                    </a>
+                  )}
+                </div>
+              </article>
+            </li>
+          );
+        })
+      }
+    </ul>
   </div>
 </section>
+
+<style>
+  /*
+    Muescas del talón: una máscara con dos círculos transparentes a la altura de la
+    línea de corte "recorta" el borde de la tarjeta, sin imágenes extra.
+  */
+  .credencial {
+    --alto-talon: 49px;
+    mask:
+      radial-gradient(circle 8px at 0 calc(100% - var(--alto-talon)), transparent 7.5px, #000 8px) left / 51% 100% no-repeat,
+      radial-gradient(circle 8px at 100% calc(100% - var(--alto-talon)), transparent 7.5px, #000 8px) right / 51% 100% no-repeat;
+  }
+  .corte {
+    background: repeating-linear-gradient(to right, currentColor 0 4px, transparent 4px 9px);
+    opacity: 0.35;
+    transition:
+      opacity 0.3s,
+      color 0.3s;
+  }
+  /* Al pasar el mouse, la línea de corte se enciende. */
+  .credencial:hover .corte {
+    opacity: 1;
+    color: var(--color-lima);
+  }
+  .vidrio--blanco.credencial:hover .corte {
+    color: var(--color-bosque);
+  }
+</style>
+
+<script>
+  import { animarCertificados } from "../scripts/animaciones.js";
+  animarCertificados();
+</script>

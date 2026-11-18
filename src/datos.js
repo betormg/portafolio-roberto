@@ -13,13 +13,7 @@ export const persona = {
   resumen:
     "Estudiante de Ingeniería Informática con formación técnica en informática y conocimientos en desarrollo web, bases de datos, hardware y soporte técnico. Interés en desarrollarme profesionalmente en el área de tecnología, adquirir experiencia práctica y seguir fortaleciendo mis conocimientos mediante certificaciones y proyectos.",
 
-  // TODO: Roberto elige una de estas tres frases (o escribe la suya) y la copia en `frase`.
-  frase: "",
-  frasesPropuestas: [
-    "Aprendo construyendo: cada proyecto mío empieza con un problema real.",
-    "Del hardware a la base de datos: me interesa entender cómo funciona cada capa.",
-    "Estudio sistemas y construyo herramientas simples para problemas concretos.",
-  ],
+  frase: "Aprendo construyendo: mi primer sistema nació en la caja de un resto bar.",
 
   // Opcional: ruta a una foto en /public (por ejemplo "/roberto.webp"). Si queda en null, no se muestra.
   foto: null,
@@ -41,48 +35,55 @@ export const secciones = [
   { id: "contacto", nombre: "Contacto" },
 ];
 
-// Árbol de habilidades. estado: "base" (base sólida) o "crecimiento" (en crecimiento).
+/*
+  Árbol de habilidades.
+  Regla: solo entra algo que ya usé al menos una vez en algo concreto.
+  - "base": lo hago sin ayuda y lo puedo explicar en una entrevista.
+  - "crecimiento": lo usé en un proyecto o curso real, pero todavía lo estoy aprendiendo.
+  Dentro de cada rama, las de base van primero (cerca del tronco) y las de crecimiento al final (las puntas).
+  "enlace" apunta a un proyecto o certificado de esta misma página.
+*/
 export const arbol = {
   raices: ["Bachiller técnico en informática", "Universidad Autónoma de la Asunción"],
   ramas: [
     {
       nombre: "Web",
       hojas: [
-        { nombre: "HTML5", estado: "base" },
-        { nombre: "CSS", estado: "base" },
-        { nombre: "JavaScript", estado: "crecimiento" },
-        { nombre: "Astro", estado: "crecimiento" },
-        { nombre: "Tailwind", estado: "crecimiento" },
-        { nombre: "GSAP", estado: "crecimiento" },
+        { nombre: "HTML5", estado: "base", evidencia: "Mi CV y la web de Lo de Carmi" },
+        { nombre: "CSS", estado: "base", evidencia: "Mi CV y la web de Lo de Carmi" },
+        { nombre: "JavaScript", estado: "crecimiento", evidencia: "El sistema de pedidos de Lo de Carmi", enlace: "#proyecto-lo-de-carmi" },
+        { nombre: "Astro y Tailwind", estado: "crecimiento", evidencia: "Este portafolio" },
+        { nombre: "GSAP", estado: "crecimiento", evidencia: "Este portafolio: el árbol que estás viendo" },
       ],
     },
     {
       nombre: "Datos",
       hojas: [
-        { nombre: "SQL", estado: "base" },
-        { nombre: "Bases de datos", estado: "base" },
-        { nombre: "Microsoft Access", estado: "crecimiento" },
-        { nombre: "PostgreSQL / Supabase", estado: "crecimiento" },
-        { nombre: "Oracle", estado: "crecimiento" },
+        { nombre: "SQL", estado: "base", evidencia: "Mi CV y el proyecto del Complejo Santa Teresa", enlace: "#proyecto-santa-teresa" },
+        { nombre: "Bases de datos y modelado", estado: "base", evidencia: "Modelo en tercera forma normal del Complejo Santa Teresa", enlace: "#proyecto-santa-teresa" },
+        // TODO: confirmar. ¿Armé yo las tablas y relaciones, o seguí las instrucciones del grupo? Si fue lo segundo, pasar a "crecimiento".
+        { nombre: "Microsoft Access", estado: "base", evidencia: "Proyecto del Complejo Santa Teresa", enlace: "#proyecto-santa-teresa" },
+        { nombre: "PostgreSQL con Supabase", estado: "crecimiento", evidencia: "El sistema de pedidos de Lo de Carmi", enlace: "#proyecto-lo-de-carmi" },
       ],
     },
     {
       nombre: "Soporte e infraestructura",
       hojas: [
-        { nombre: "Soporte técnico", estado: "base" },
-        { nombre: "Hardware y mantenimiento de PC", estado: "base" },
-        { nombre: "Sistemas operativos", estado: "base" },
-        { nombre: "Redes", estado: "crecimiento" },
-        { nombre: "Ciberseguridad", estado: "crecimiento" },
+        { nombre: "Soporte técnico", estado: "base", evidencia: "Bachiller técnico en informática" },
+        { nombre: "Hardware y mantenimiento de PC", estado: "base", evidencia: "Bachiller técnico en informática" },
+        { nombre: "Sistemas operativos", estado: "base", evidencia: "Bachiller técnico en informática" },
+        { nombre: "Redes", estado: "crecimiento", evidencia: "Cisco Networking Academy, Networking Basics", enlace: "#certificado-cisco" },
+        { nombre: "Ciberseguridad", estado: "crecimiento", evidencia: "IBM SkillsBuild, Cybersecurity Fundamentals", enlace: "#certificado-ciberseguridad" },
       ],
     },
     {
       nombre: "Herramientas",
       hojas: [
-        { nombre: "Microsoft Office / Excel", estado: "base" },
-        { nombre: "Git y GitHub", estado: "crecimiento" },
-        { nombre: "Vercel", estado: "crecimiento" },
-        { nombre: "IA generativa", estado: "crecimiento" },
+        // TODO: confirmar. ¿Tengo un ejemplo concreto de uso de Excel? Si no, pasar a "crecimiento".
+        { nombre: "Microsoft Office / Excel", estado: "base", evidencia: "Mi CV" },
+        { nombre: "Git y GitHub", estado: "crecimiento", evidencia: "El sistema de pedidos de Lo de Carmi", enlace: "#proyecto-lo-de-carmi" },
+        { nombre: "Vercel", estado: "crecimiento", evidencia: "El sistema de pedidos de Lo de Carmi, publicado", enlace: "#proyecto-lo-de-carmi" },
+        { nombre: "Desarrollo con IA", estado: "crecimiento", evidencia: "Curso de IBM y la caja de Lo de Carmi hecha con Claude Code", enlace: "#certificado-ia" },
       ],
     },
   ],
@@ -90,6 +91,7 @@ export const arbol = {
 
 export const proyectos = [
   {
+    id: "proyecto-lo-de-carmi",
     titulo: "Sistema de pedidos de Lo de Carmi Resto Bar",
     problema: "Caja digital para tomar pedidos, controlar el stock del día y saber qué se vende.",
     funciones: [
@@ -103,11 +105,12 @@ export const proyectos = [
     tecnologias: ["JavaScript", "Vite", "Supabase (PostgreSQL con seguridad por filas)", "Vercel"],
     nota: "No tiene demo pública porque requiere inicio de sesión.",
     capturas: [], // TODO: capturas en WebP con datos de prueba, en /public/capturas
-    estado: "", // TODO: "En pruebas" o "En uso"
+    estado: "Versión 1 terminada",
     link: "", // TODO: link del repositorio (hoy es privado)
     grupal: false,
   },
   {
+    id: "proyecto-santa-teresa",
     titulo: "Gestión de Reservas y Servicios del Complejo Deportivo Santa Teresa",
     problema:
       "Base de datos en Access para la materia Introducción a los Sistemas de Gestión de Bases de Datos.",
@@ -127,11 +130,49 @@ export const proyectos = [
   },
 ];
 
-export const experiencia = [
+/*
+  Trayectoria: experiencia y educación en una sola línea de tiempo, de lo más reciente
+  a lo más antiguo. "actual: true" marca lo que sigue en curso.
+*/
+export const trayectoria = [
   {
+    tipo: "Experiencia",
+    lugar: "Voicenter S.A.",
+    detalle: "Call center de Banco Continental",
+    rol: "Atención al cliente",
+    desde: "Abr. 2026",
+    hasta: "May. 2026",
+    ciudad: "Asunción",
+    tareas: [
+      "Atención y orientación a clientes",
+      "Manejo de información y herramientas informáticas",
+      "Comunicación efectiva y resolución de consultas",
+      "Trabajo siguiendo procedimientos y protocolos establecidos",
+    ],
+  },
+  {
+    tipo: "Educación",
+    lugar: "Universidad Autónoma de la Asunción",
+    rol: "Ingeniería en Informática, énfasis en Sistemas",
+    desde: "Feb. 2026",
+    hasta: "Actualidad",
+    ciudad: "Asunción",
+    actual: true,
+  },
+  {
+    tipo: "Educación",
+    lugar: 'Colegio Nacional E.M.D. "San Martín"',
+    rol: "Bachiller técnico en informática",
+    desde: "Feb. 2023",
+    hasta: "Oct. 2025",
+    ciudad: "Asunción",
+  },
+  {
+    tipo: "Experiencia",
     lugar: "Contraloría General de la República",
     rol: "Pasante",
-    periodo: "Dic. 2024 – Feb. 2025",
+    desde: "Dic. 2024",
+    hasta: "Feb. 2025",
     tareas: [
       "Registro y control de bienes patrimoniales",
       "Manejo y organización de información",
@@ -139,55 +180,55 @@ export const experiencia = [
       "Trabajo siguiendo procedimientos establecidos",
     ],
   },
-  {
-    lugar: "Voicenter S.A. · call center de Banco Continental",
-    rol: "Atención al cliente",
-    periodo: "Abr. 2026 – May. 2026",
-    ciudad: "Asunción",
-    tareas: [
-      "Atención y orientación a clientes",
-      "Manejo de información y herramientas informáticas",
-      "Comunicación efectiva y resolución de consultas",
-      "Trabajo siguiendo protocolos",
-    ],
-  },
   // TODO: preguntar a Roberto si suma Lo de Carmi Resto Bar como experiencia propia (rol y fecha de inicio).
 ];
 
-export const educacion = [
-  {
-    lugar: 'Colegio Nacional E.M.D. "San Martín"',
-    titulo: "Bachiller técnico en informática",
-    periodo: "2023 – 2025",
-    ciudad: "Asunción",
-  },
-  {
-    lugar: "Universidad Autónoma de la Asunción",
-    titulo: "Ingeniería en Informática, énfasis en Sistemas",
-    periodo: "Desde feb. 2026",
-    ciudad: "Asunción",
-  },
-];
+export const referencias = "Referencias disponibles a pedido";
 
 // nivel: 1 básico, 2 avanzado, 3 nativo (se dibuja como tres indicadores).
 export const idiomas = [
   { nombre: "Español", nivel: 3, etiqueta: "Nativo" },
   { nombre: "Inglés", nivel: 2, etiqueta: "Avanzado" },
+  // TODO: el CV no menciona portugués; confirmar que se muestra.
   { nombre: "Portugués", nivel: 1, etiqueta: "Básico" },
 ];
 
 export const certificados = [
-  { emisor: "Cisco Networking Academy", nombre: "Networking Basics", anio: 2026, tipo: "Certificado", verificacion: "" },
-  { emisor: "IBM SkillsBuild", nombre: "Cybersecurity Fundamentals", anio: 2026, tipo: "Curso", verificacion: "" },
-  { emisor: "IBM SkillsBuild", nombre: "Getting Started with Generative AI", anio: 2026, tipo: "Curso", verificacion: "" },
+  {
+    id: "certificado-cisco",
+    emisor: "Cisco Networking Academy",
+    nombre: "Networking Basics",
+    anio: 2026,
+    tipo: "Certificado",
+    tema: "Redes",
+    verificacion: "", // TODO: link de verificación (Credly u otro), si existe
+  },
+  {
+    id: "certificado-ciberseguridad",
+    emisor: "IBM SkillsBuild",
+    nombre: "Cybersecurity Fundamentals",
+    anio: 2026,
+    tipo: "Curso",
+    tema: "Ciberseguridad",
+    verificacion: "",
+  },
+  {
+    id: "certificado-ia",
+    emisor: "IBM SkillsBuild",
+    nombre: "Getting Started with Generative AI",
+    anio: 2026,
+    tipo: "Curso",
+    tema: "IA generativa",
+    verificacion: "",
+  },
 ];
 
 export const contacto = {
   email: "robertormgodoy@gmail.com", // TODO: confirmar si se muestra en el sitio
   github: "", // TODO
   linkedin: "", // TODO
-  whatsapp: "", // TODO
-  referencias: "Referencias disponibles a pedido",
+  // TODO: confirmar si este número del CV es el de WhatsApp y si se publica.
+  whatsapp: "",
 };
 
 export const meta = {
