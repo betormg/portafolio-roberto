@@ -1,10 +1,129 @@
 ---
-// Sección provisoria: se construye en el paso 5.
+/*
+  Contacto: el resumen (sobre mí) y una lista de canales en filas, no en tarjetas.
+  Cada fila es un enlace completo; al pasar el mouse, la flecha avanza y aparece el subrayado lima.
+  El email tiene un botón para copiarlo al portapapeles, con un micro-estado "Copiado".
+  Cierra con un pie simple.
+*/
+import { persona, contacto, textos } from "../datos.js";
+
+const tx = textos.contacto;
+const quitarProtocolo = (url) => url.replace(/^https?:\/\/(www\.)?/, "");
+
+// Solo se muestran los canales que tienen dato cargado en datos.js.
+const canales = [
+  contacto.email && { nombre: "Email", valor: contacto.email, href: `mailto:${contacto.email}`, copiar: true },
+  contacto.whatsapp && { nombre: "WhatsApp", valor: contacto.telefono, href: contacto.whatsapp, externo: true },
+  contacto.linkedin && { nombre: "LinkedIn", valor: quitarProtocolo(contacto.linkedin).replace("linkedin.com/", ""), href: contacto.linkedin, externo: true },
+  contacto.github && { nombre: "GitHub", valor: quitarProtocolo(contacto.github), href: contacto.github, externo: true },
+].filter(Boolean);
+
+const anio = new Date().getFullYear();
 ---
 
-<section id="contacto" class="min-h-[60vh] border-t border-white/10 py-[96px]">
+<section id="contacto" class="relative border-t border-white/10 pb-[48px] pt-[96px] lg:pt-[144px]">
   <div class="contenedor">
-    <p class="etiqueta"><span class="text-lima">05</span> Contacto</p>
-    <p class="mt-[24px] max-w-[420px] text-blanco/50">En construcción (paso 5).</p>
+    <div class="grid gap-y-[48px] lg:grid-cols-12 lg:gap-x-[28px]">
+      <div class="lg:col-span-6">
+        <p class="etiqueta"><span class="text-lima">05</span> {tx.etiqueta}</p>
+        <h2
+          class="mt-[24px] font-display text-[clamp(40px,5.4vw,68px)] font-[380] leading-[1.02] tracking-[-0.03em]"
+          style="font-variation-settings: 'opsz' 144, 'SOFT' 30;"
+        >
+          {tx.titulo} <span class="italic text-blanco/80" style="font-variation-settings: 'opsz' 144, 'SOFT' 100, 'WONK' 1;">{tx.cursiva}</span>
+        </h2>
+
+        <div class="mt-[48px] max-w-[476px] border-l border-white/20 pl-[20px]">
+          <h3 class="etiqueta">{tx.sobreMi}</h3>
+          <p class="mt-[6px] text-[16px] leading-[26px] text-blanco/80">{persona.resumen}</p>
+          <p class="etiqueta mt-[14px] !normal-case !tracking-normal">{persona.ubicacion}</p>
+        </div>
+      </div>
+
+      <!-- Canales -->
+      <ul class="self-end border-t border-white/15 lg:col-span-6 lg:col-start-7">
+        {
+          canales.map((c) => (
+            <li class="canal relative border-b border-white/15">
+              <a
+                href={c.href}
+                {...(c.externo ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                class="group grid grid-cols-[1fr_auto] items-center gap-x-[14px] gap-y-[2px] py-[16px] pr-[4px] sm:grid-cols-[126px_1fr_auto] sm:py-[18px]"
+              >
+                <span class="etiqueta col-span-2 sm:col-span-1">{c.nombre}</span>
+                <span class="valor min-w-0 break-words text-[17px] leading-[24px] text-blanco sm:text-[20px] sm:leading-[28px]">
+                  {c.valor}
+                </span>
+                <span class="flecha text-blanco/60 transition-[transform,color] duration-300 group-hover:translate-x-[4px] group-hover:text-lima" aria-hidden="true">
+                  {c.externo ? "↗" : "→"}
+                </span>
+                {c.externo && <span class="sr-only">({textos.nuevaPestana})</span>}
+              </a>
+              {c.copiar && (
+                <button
+                  type="button"
+                  class="copiar absolute right-0 top-1/2 hidden h-[28px] -translate-y-1/2 items-center rounded-[4px] border border-white/25 px-[10px] font-mono text-[11px] uppercase tracking-[0.06em] text-blanco/80 transition-colors hover:border-lima hover:text-blanco sm:inline-flex"
+                  data-copiar={c.valor}
+                  data-texto-copiado={tx.copiado}
+                >
+                  <span data-etiqueta-copiar aria-live="polite">{tx.copiar}</span>
+                  <span class="sr-only"> {c.valor}</span>
+                </button>
+              )}
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <!-- Pie -->
+    <footer class="mt-[144px] flex flex-wrap items-center justify-between gap-x-[28px] gap-y-[12px] border-t border-white/10 pt-[20px]">
+      <p class="etiqueta">{persona.nombre} {persona.apellido} · {anio}</p>
+      <p class="etiqueta hidden md:block">{tx.hecho}</p>
+      <a href="#inicio" class="etiqueta subrayado transition-colors hover:!text-blanco">{tx.volver} ↑</a>
+    </footer>
   </div>
 </section>
+
+<style>
+  /* La fila entera reacciona: subrayado lima bajo el valor y la flecha que avanza. */
+  .valor {
+    background: linear-gradient(var(--color-lima), var(--color-lima)) no-repeat 0 100% / 0% 1px;
+    transition: background-size 0.35s cubic-bezier(0.2, 0.7, 0.2, 1);
+  }
+  .canal a:hover .valor,
+  .canal a:focus-visible .valor {
+    background-size: 100% 1px;
+  }
+  /* En la fila del email, se deja lugar para el botón Copiar */
+  @media (min-width: 640px) {
+    .canal:has(.copiar) a {
+      padding-right: 84px;
+    }
+    /* El botón Copiar ocupa el lugar de la flecha, alineado con las de las otras filas */
+    .canal:has(.copiar) .flecha {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  // Copiar el email: usa la API del portapapeles y muestra "Copiado" por dos segundos.
+  document.querySelectorAll("[data-copiar]").forEach((boton) => {
+    const etiqueta = boton.querySelector("[data-etiqueta-copiar]");
+    const original = etiqueta.textContent;
+    boton.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(boton.dataset.copiar);
+        etiqueta.textContent = boton.dataset.textoCopiado;
+        boton.classList.add("!border-lima", "!text-lima");
+        setTimeout(() => {
+          etiqueta.textContent = original;
+          boton.classList.remove("!border-lima", "!text-lima");
+        }, 2000);
+      } catch {
+        // Si el navegador no permite copiar, el enlace mailto sigue funcionando.
+      }
+    });
+  });
+</script>

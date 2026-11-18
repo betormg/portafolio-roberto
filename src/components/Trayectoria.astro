@@ -5,7 +5,8 @@
   Los nodos distinguen el tipo: cuadrado = experiencia, círculo = educación,
   lima = sigue en curso.
 */
-import { trayectoria, idiomas, referencias } from "../datos.js";
+import { trayectoria, idiomas, referencias, textos } from "../datos.js";
+const tx = textos.trayectoria;
 ---
 
 <section id="trayectoria" class="relative border-t border-white/10 py-[96px] lg:py-[144px]">
@@ -13,17 +14,17 @@ import { trayectoria, idiomas, referencias } from "../datos.js";
     <!-- Columna fija: título e idiomas -->
     <div class="lg:col-span-4">
       <div class="lg:sticky lg:top-[120px]">
-        <p class="etiqueta"><span class="text-lima">03</span> Trayectoria</p>
+        <p class="etiqueta"><span class="text-lima">03</span> {tx.etiqueta}</p>
         <h2
           class="mt-[24px] font-display text-[clamp(44px,6vw,72px)] font-[380] leading-[1] tracking-[-0.03em]"
           style="font-variation-settings: 'opsz' 144, 'SOFT' 30;"
         >
-          Trabajo <span class="italic text-blanco/80" style="font-variation-settings: 'opsz' 144, 'SOFT' 100, 'WONK' 1;">y estudio</span>
+          {tx.titulo} <span class="italic text-blanco/80" style="font-variation-settings: 'opsz' 144, 'SOFT' 100, 'WONK' 1;">{tx.cursiva}</span>
         </h2>
 
         <!-- Idiomas: tres indicadores por idioma, rellenos según el nivel -->
         <div class="mt-[48px] max-w-[336px]">
-          <h3 class="etiqueta border-b border-white/15 pb-[11px]">Idiomas</h3>
+          <h3 class="etiqueta border-b border-white/15 pb-[11px]">{tx.idiomas}</h3>
           <ul>
             {
               idiomas.map((idioma) => (
@@ -55,7 +56,7 @@ import { trayectoria, idiomas, referencias } from "../datos.js";
             <!-- Fechas, en monoespaciada -->
             <p class="etiqueta tabular-nums sm:pt-[3px] sm:text-right">
               <span class="sm:block">{item.desde}</span>
-              <span class="hidden text-blanco/40 sm:block">↓</span>
+              <span class="hidden text-blanco/55 sm:block">↓</span>
               <span class="sm:hidden"> – </span>
               <span class={item.actual ? "text-lima" : ""}>{item.hasta}</span>
             </p>
@@ -73,7 +74,7 @@ import { trayectoria, idiomas, referencias } from "../datos.js";
             <div>
               <p class="etiqueta">
                 {item.tipo}
-                {item.ciudad && <span class="text-blanco/40"> · {item.ciudad}</span>}
+                {item.ciudad && <span class="text-blanco/55"> · {item.ciudad}</span>}
               </p>
               <h3
                 class="mt-[6px] font-display text-[26px] font-[420] leading-[30px] tracking-[-0.01em] sm:text-[30px] sm:leading-[36px]"

@@ -3,7 +3,7 @@
   Barra de navegación fija, de vidrio oscuro, con brillo especular y refracción.
   El punto lima marca en qué sección está la persona (lo calcula un IntersectionObserver).
 */
-import { persona, secciones } from "../datos.js";
+import { persona, secciones, textos } from "../datos.js";
 ---
 
 <header class="fixed inset-x-0 top-[14px] z-40">
@@ -30,7 +30,7 @@ import { persona, secciones } from "../datos.js";
               class="enlace-nav etiqueta relative flex h-[34px] items-center gap-[7px] rounded-[4px] px-[14px] !text-blanco/70 transition-colors hover:!text-blanco"
             >
               <span class="punto" aria-hidden="true" />
-              <span class="tabular-nums text-blanco/40">{String(i + 1).padStart(2, "0")}</span>
+              <span class="tabular-nums text-blanco/55">{String(i + 1).padStart(2, "0")}</span>
               {s.nombre}
             </a>
           </li>
@@ -50,7 +50,7 @@ import { persona, secciones } from "../datos.js";
         <span class="raya absolute inset-x-0 top-0 h-px bg-current transition-transform"></span>
         <span class="raya absolute inset-x-0 bottom-0 h-px bg-current transition-transform"></span>
       </span>
-      Menú
+      {textos.menu}
     </button>
   </nav>
 

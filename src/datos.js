@@ -273,6 +273,76 @@ export const contacto = {
   linkedin: "https://www.linkedin.com/in/roberto-mendoza-7092863a2",
 };
 
+/*
+  Textos de la interfaz: títulos de sección, etiquetas y botones.
+  Están acá (y no en los componentes) para poder editarlos o traducirlos en un solo lugar.
+  En los títulos, "cursiva" es la parte que se muestra en itálica.
+*/
+export const textos = {
+  saltar: "Saltar al contenido",
+  menu: "Menú",
+  nuevaPestana: "se abre en otra pestaña",
+  portada: {
+    ctaPrincipal: "Ver proyectos",
+    ctaSecundario: "Escribirme",
+    ficha: "Ficha técnica",
+    estadoFicha: "Cursando · desde febrero de 2026",
+    figura: "Fig. 01 — Brote",
+    siguiente: "Árbol de habilidades",
+  },
+  arbol: {
+    etiqueta: "Árbol de habilidades",
+    titulo: "Lo que sé,",
+    cursiva: "y lo que crece",
+    estados: { base: "Base sólida", crecimiento: "En crecimiento" },
+    leyenda: { base: "Lo hago sin ayuda y lo puedo explicar.", crecimiento: "Lo usé en algo real y lo sigo aprendiendo." },
+    raiz: "Raíz",
+    raices: "Raíces",
+    dondeLoUse: "Dónde lo usé",
+    verProyecto: "Ver proyecto",
+    verCertificado: "Ver certificado",
+  },
+  proyectos: {
+    etiqueta: "Proyectos",
+    titulo: "Lo que",
+    cursiva: "construí",
+    problema: "El problema",
+    queHace: "Qué hace",
+    miParte: "Mi parte",
+    funciones: "Funciones",
+    tecnologias: "Tecnologías",
+    verRepositorio: "Ver repositorio",
+    repositorioPrivado: "Repositorio privado",
+    grupal: "Proyecto grupal",
+    figura: "Fig. 02 — Modelo de datos",
+    figuraFuente: "Supabase · PostgreSQL",
+  },
+  trayectoria: {
+    etiqueta: "Trayectoria",
+    titulo: "Trabajo",
+    cursiva: "y estudio",
+    idiomas: "Idiomas",
+  },
+  certificados: {
+    etiqueta: "Certificados y cursos",
+    titulo: "Lo que sigo",
+    cursiva: "estudiando",
+    intro: "Formación complementaria a la carrera, en redes, seguridad e inteligencia artificial.",
+    tema: "Tema",
+    verificar: "Verificar",
+  },
+  contacto: {
+    etiqueta: "Contacto",
+    titulo: "Busco sumar experiencia práctica",
+    cursiva: "en tecnología.",
+    sobreMi: "Sobre mí",
+    copiar: "Copiar",
+    copiado: "Copiado",
+    volver: "Volver arriba",
+    hecho: "Hecho con Astro, Tailwind y GSAP",
+  },
+};
+
 export const meta = {
   titulo: "Roberto Mendoza · Ingeniería Informática",
   descripcion:

@@ -6,19 +6,20 @@
   Si en datos.js se cargan capturas, aparecen debajo del modelo (WebP, carga diferida).
   Los proyectos marcados "enProceso" se muestran como un espacio reservado, sin inventar detalles.
 */
-import { proyectos } from "../datos.js";
+import { proyectos, textos } from "../datos.js";
+const tx = textos.proyectos;
 
 const indice = (i) => `P—${String(i + 1).padStart(2, "0")}`;
 ---
 
 <section id="proyectos" class="relative border-t border-white/10 py-[96px] lg:py-[144px]">
   <div class="contenedor">
-    <p class="etiqueta"><span class="text-lima">02</span> Proyectos</p>
+    <p class="etiqueta"><span class="text-lima">02</span> {tx.etiqueta}</p>
     <h2
       class="mt-[24px] font-display text-[clamp(44px,6vw,72px)] font-[380] leading-[1] tracking-[-0.03em]"
       style="font-variation-settings: 'opsz' 144, 'SOFT' 30;"
     >
-      Lo que <span class="italic text-blanco/80" style="font-variation-settings: 'opsz' 144, 'SOFT' 100, 'WONK' 1;">construí</span>
+      {tx.titulo} <span class="italic text-blanco/80" style="font-variation-settings: 'opsz' 144, 'SOFT' 100, 'WONK' 1;">{tx.cursiva}</span>
     </h2>
 
     {
@@ -56,7 +57,7 @@ const indice = (i) => `P—${String(i + 1).padStart(2, "0")}`;
                   <span class="size-[7px] rounded-full bg-lima shadow-[0_0_6px_rgb(183_216_140/.6)]" aria-hidden="true" />
                   {p.estado}
                 </span>
-                {p.grupal && <span class="etiqueta">Proyecto grupal</span>}
+                {p.grupal && <span class="etiqueta">{tx.grupal}</span>}
               </div>
 
               <h3
@@ -68,26 +69,26 @@ const indice = (i) => `P—${String(i + 1).padStart(2, "0")}`;
 
               <dl class="mt-[36px] grid gap-y-[24px]">
                 <div>
-                  <dt class="etiqueta">El problema</dt>
+                  <dt class="etiqueta">{tx.problema}</dt>
                   <dd class="mt-[4px] text-[17px] leading-[26px] text-blanco/85">{p.problema}</dd>
                 </div>
                 <div>
-                  <dt class="etiqueta">Qué hace</dt>
+                  <dt class="etiqueta">{tx.queHace}</dt>
                   <dd class="mt-[4px] text-[17px] leading-[26px] text-blanco/85">{p.queHace}</dd>
                 </div>
                 {p.rol && (
                   <div>
-                    <dt class="etiqueta">Mi parte</dt>
+                    <dt class="etiqueta">{tx.miParte}</dt>
                     <dd class="mt-[4px] text-[17px] leading-[26px] text-blanco/85">{p.rol}</dd>
                   </div>
                 )}
                 <div>
-                  <dt class="etiqueta">Funciones</dt>
+                  <dt class="etiqueta">{tx.funciones}</dt>
                   <dd>
                     <ol class="mt-[6px] grid border-t border-white/10 sm:grid-cols-2 sm:gap-x-[28px]">
                       {p.funciones.map((f, n) => (
                         <li class="flex gap-[12px] border-b border-white/10 py-[8px] text-[15px] leading-[22px] text-blanco/80">
-                          <span class="pt-[1px] font-mono text-[11px] tabular-nums text-blanco/45">{String(n + 1).padStart(2, "0")}</span>
+                          <span class="pt-[1px] font-mono text-[11px] tabular-nums text-blanco/55">{String(n + 1).padStart(2, "0")}</span>
                           {f}
                         </li>
                       ))}
@@ -95,7 +96,7 @@ const indice = (i) => `P—${String(i + 1).padStart(2, "0")}`;
                   </dd>
                 </div>
                 <div>
-                  <dt class="etiqueta">Tecnologías</dt>
+                  <dt class="etiqueta">{tx.tecnologias}</dt>
                   <dd>
                     <ul class="mt-[8px] flex flex-wrap gap-[7px]">
                       {p.tecnologias.map((t) => (
@@ -109,10 +110,10 @@ const indice = (i) => `P—${String(i + 1).padStart(2, "0")}`;
               <div class="mt-[36px] flex flex-wrap items-center gap-x-[28px] gap-y-[12px] border-t border-white/10 pt-[16px]">
                 {p.link ? (
                   <a href={p.link} target="_blank" rel="noopener noreferrer" class="subrayado text-[15px] text-blanco">
-                    Ver repositorio<span class="sr-only"> (se abre en otra pestaña)</span> ↗
+                    {tx.verRepositorio}<span class="sr-only"> ({textos.nuevaPestana})</span> ↗
                   </a>
                 ) : (
-                  <span class="etiqueta">Repositorio privado</span>
+                  <span class="etiqueta">{tx.repositorioPrivado}</span>
                 )}
                 {p.nota && <p class="text-[14px] leading-[20px] text-blanco/60">{p.nota}</p>}
               </div>
@@ -123,8 +124,8 @@ const indice = (i) => `P—${String(i + 1).padStart(2, "0")}`;
               <figure class="lg:col-span-7 lg:col-start-6 lg:pt-[48px]">
                 <div class="vidrio vidrio--blanco relative p-[14px] sm:p-[21px]">
                   <header class="flex flex-wrap items-baseline justify-between gap-x-[14px] font-mono text-[11px] uppercase tracking-[0.06em] text-tinta/70">
-                    <span>Fig. 02 — Modelo de datos</span>
-                    <span>Supabase · PostgreSQL</span>
+                    <span>{tx.figura}</span>
+                    <span>{tx.figuraFuente}</span>
                   </header>
 
                   <!-- Tablas: al pasar el mouse por una clave foránea, se marca la tabla a la que apunta -->

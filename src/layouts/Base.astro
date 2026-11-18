@@ -10,7 +10,7 @@ import "@fontsource/instrument-sans/600.css";
 import "@fontsource/jetbrains-mono/400.css";
 import "@fontsource/jetbrains-mono/500.css";
 import "../styles/global.css";
-import { meta } from "../datos.js";
+import { meta, textos } from "../datos.js";
 
 const { titulo = meta.titulo, descripcion = meta.descripcion } = Astro.props;
 ---
@@ -27,7 +27,16 @@ const { titulo = meta.titulo, descripcion = meta.descripcion } = Astro.props;
     <meta property="og:description" content={descripcion} />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="es_PY" />
-    <!-- TODO (paso 5): imagen para compartir en /public/og.png y la URL final del sitio -->
+    <!--
+      Imagen para compartir (WhatsApp, LinkedIn). Las redes piden una URL absoluta:
+      se arma con "site" de astro.config.mjs, que se completa en el paso 6 con la URL de Vercel.
+    -->
+    <meta property="og:image" content={new URL("/og.png", Astro.site ?? Astro.url)} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Roberto Mendoza, estudiante de Ingeniería Informática" />
+    <meta name="twitter:card" content="summary_large_image" />
+    {Astro.site && <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />}
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
   </head>
@@ -35,7 +44,7 @@ const { titulo = meta.titulo, descripcion = meta.descripcion } = Astro.props;
     <a
       href="#contenido"
       class="etiqueta sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:bg-blanco focus:px-3 focus:text-tinta"
-      >Saltar al contenido</a
+      >{textos.saltar}</a
     >
 
     <!-- Fondo (diseño de Roberto): fijo a la pantalla y con el resplandor centrado. -->
