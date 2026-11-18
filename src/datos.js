@@ -59,10 +59,9 @@ export const arbol = {
     {
       nombre: "Datos",
       hojas: [
-        { nombre: "SQL", estado: "base", evidencia: "Mi CV y el proyecto del Complejo Santa Teresa", enlace: "#proyecto-santa-teresa" },
-        { nombre: "Bases de datos y modelado", estado: "base", evidencia: "Modelo en tercera forma normal del Complejo Santa Teresa", enlace: "#proyecto-santa-teresa" },
-        // TODO: confirmar. ¿Armé yo las tablas y relaciones, o seguí las instrucciones del grupo? Si fue lo segundo, pasar a "crecimiento".
-        { nombre: "Microsoft Access", estado: "base", evidencia: "Proyecto del Complejo Santa Teresa", enlace: "#proyecto-santa-teresa" },
+        { nombre: "SQL", estado: "base", evidencia: "Mi CV y los trabajos prácticos de bases de datos de la facultad" },
+        { nombre: "Bases de datos y modelado", estado: "base", evidencia: "Trabajo práctico de la facultad: modelo en tercera forma normal" },
+        { nombre: "Microsoft Access", estado: "crecimiento", evidencia: "Trabajo práctico de la facultad: armé las tablas y las relaciones" },
         { nombre: "PostgreSQL con Supabase", estado: "crecimiento", evidencia: "El sistema de pedidos de Lo de Carmi", enlace: "#proyecto-lo-de-carmi" },
       ],
     },
@@ -79,8 +78,7 @@ export const arbol = {
     {
       nombre: "Herramientas",
       hojas: [
-        // TODO: confirmar. ¿Tengo un ejemplo concreto de uso de Excel? Si no, pasar a "crecimiento".
-        { nombre: "Microsoft Office / Excel", estado: "base", evidencia: "Mi CV" },
+        { nombre: "Microsoft Office / Excel", estado: "crecimiento", evidencia: "Mi CV" },
         { nombre: "Git y GitHub", estado: "crecimiento", evidencia: "El sistema de pedidos de Lo de Carmi", enlace: "#proyecto-lo-de-carmi" },
         { nombre: "Vercel", estado: "crecimiento", evidencia: "El sistema de pedidos de Lo de Carmi, publicado", enlace: "#proyecto-lo-de-carmi" },
         { nombre: "Desarrollo con IA", estado: "crecimiento", evidencia: "Curso de IBM y la caja de Lo de Carmi hecha con Claude Code", enlace: "#certificado-ia" },
@@ -109,25 +107,7 @@ export const proyectos = [
     link: "", // TODO: link del repositorio (hoy es privado)
     grupal: false,
   },
-  {
-    id: "proyecto-santa-teresa",
-    titulo: "Gestión de Reservas y Servicios del Complejo Deportivo Santa Teresa",
-    problema:
-      "Base de datos en Access para la materia Introducción a los Sistemas de Gestión de Bases de Datos.",
-    funciones: [
-      "Clientes, canchas y horarios",
-      "Reservas y servicios adicionales",
-      "Pagos",
-      "Modelo en tercera forma normal",
-      "Consultas, formularios e informes",
-    ],
-    tecnologias: ["Microsoft Access", "SQL"],
-    capturas: [], // TODO
-    estado: "", // TODO: confirmar que está terminado
-    link: "",
-    grupal: true,
-    rol: "", // TODO: qué parte hizo Roberto
-  },
+  // TODO: proyecto nuevo que reemplaza al del Complejo Santa Teresa (se define con Roberto).
 ];
 
 /*
@@ -189,7 +169,6 @@ export const referencias = "Referencias disponibles a pedido";
 export const idiomas = [
   { nombre: "Español", nivel: 3, etiqueta: "Nativo" },
   { nombre: "Inglés", nivel: 2, etiqueta: "Avanzado" },
-  // TODO: el CV no menciona portugués; confirmar que se muestra.
   { nombre: "Portugués", nivel: 1, etiqueta: "Básico" },
 ];
 
@@ -224,11 +203,11 @@ export const certificados = [
 ];
 
 export const contacto = {
-  email: "robertormgodoy@gmail.com", // TODO: confirmar si se muestra en el sitio
-  github: "", // TODO
-  linkedin: "", // TODO
-  // TODO: confirmar si este número del CV es el de WhatsApp y si se publica.
-  whatsapp: "",
+  email: "robertormgodoy@gmail.com",
+  telefono: "+595 994 122 691",
+  whatsapp: "https://wa.me/595994122691",
+  github: "https://github.com/betormg",
+  linkedin: "https://www.linkedin.com/in/roberto-mendoza-7092863a2",
 };
 
 export const meta = {

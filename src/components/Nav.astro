@@ -20,7 +20,7 @@ import { persona, secciones } from "../datos.js";
       <span class="etiqueta hidden !text-blanco/80 sm:inline">{persona.nombre} {persona.apellido}</span>
     </a>
 
-    <ul class="hidden items-center md:flex">
+    <ul class="hidden items-center lg:flex">
       {
         secciones.map((s, i) => (
           <li>
@@ -41,7 +41,7 @@ import { persona, secciones } from "../datos.js";
     <!-- Celular: botón que despliega el menú -->
     <button
       type="button"
-      class="etiqueta flex h-[34px] items-center gap-[7px] rounded-[4px] px-[14px] !text-blanco md:hidden"
+      class="etiqueta flex h-[34px] items-center gap-[7px] rounded-[4px] px-[14px] !text-blanco lg:hidden"
       aria-expanded="false"
       aria-controls="menu-movil"
       data-boton-menu
@@ -54,7 +54,7 @@ import { persona, secciones } from "../datos.js";
     </button>
   </nav>
 
-  <div id="menu-movil" class="contenedor mt-[7px] md:hidden" hidden>
+  <div id="menu-movil" class="contenedor mt-[7px] lg:hidden" hidden>
     <ul class="vidrio !rounded-[6px] p-[7px]">
       {
         secciones.map((s, i) => (

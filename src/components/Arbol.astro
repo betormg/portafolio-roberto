@@ -1,10 +1,485 @@
 ---
-// Sección provisoria: se construye en el paso 3.
+/*
+  Árbol de habilidades.
+
+  Escritorio (≥ 1024 px): un "escenario" de 1260 × 720 px. El SVG dibuja raíces, tronco,
+  ramas y ramitas; las hojas son botones HTML posicionados encima, así el texto queda nítido.
+  Las posiciones se calculan acá, al compilar, con la fórmula de una curva de Bézier:
+  el navegador recibe el HTML ya ubicado y no necesita JavaScript para dibujarlo.
+  Después, un script escala el escenario para que entre en la pantalla.
+
+  Celular y tablet (< 1024 px): tronco vertical a la izquierda, ramas hacia la derecha y las hojas
+  debajo de cada rama.
+*/
+import { arbol } from "../datos.js";
+
+const ANCHO = 1260;
+const ALTO = 720;
+const TRONCO_X = 630;
+const SUELO = 600;
+const CIMA = 64;
+
+// Forma de cada rama: punto de inicio en el tronco (p0), dos puntos de control y la punta (p3).
+const formas = {
+  Web: { lado: -1, p0: [630, 300], c1: [520, 300], c2: [330, 250], p3: [196, 196] },
+  Herramientas: { lado: 1, p0: [630, 236], c1: [740, 236], c2: [930, 186], p3: [1064, 132] },
+  Datos: { lado: 1, p0: [630, 460], c1: [740, 460], c2: [930, 410], p3: [1064, 356] },
+  "Soporte e infraestructura": { lado: -1, p0: [630, 524], c1: [520, 524], c2: [330, 474], p3: [196, 420] },
+};
+
+// Punto de una curva de Bézier cúbica para un t entre 0 y 1.
+const bezier = (f, t) => {
+  const u = 1 - t;
+  const a = u * u * u, b = 3 * u * u * t, c = 3 * u * t * t, d = t * t * t;
+  return [0, 1].map((k) => a * f.p0[k] + b * f.c1[k] + c * f.c2[k] + d * f.p3[k]);
+};
+
+const estados = {
+  base: "Base sólida",
+  crecimiento: "En crecimiento",
+};
+const textoEnlace = (enlace) => (enlace.startsWith("#certificado") ? "Ver certificado" : "Ver proyecto");
+
+const ramas = arbol.ramas.map((rama, r) => {
+  const f = formas[rama.nombre];
+  const n = rama.hojas.length;
+  const d = `M${f.p0} C${f.c1} ${f.c2} ${f.p3}`;
+  // Momento en que el tronco llega a esta rama (0 = suelo, 1 = cima): lo usa la animación.
+  const altura = (SUELO - f.p0[1]) / (SUELO - CIMA);
+
+  const hojas = rama.hojas.map((hoja, i) => {
+    const t = n === 1 ? 0.6 : 0.26 + (i * 0.69) / (n - 1);
+    const [bx, by] = bezier(f, t);
+    const arriba = i % 2 === 0; // las hojas se alternan arriba y abajo de la rama
+    const ax = bx + f.lado * 10;
+    const ay = by + (arriba ? -34 : 34);
+    // Dónde abre la tarjeta de evidencia, para que no se salga del escenario.
+    const alinear = ax < 260 ? "izquierda" : ax > ANCHO - 260 ? "derecha" : "centro";
+    return { ...hoja, id: `hoja-${r}-${i}`, t, bx, by, ax, ay, arriba, alinear };
+  });
+
+  return { ...rama, r, f, d, altura, hojas };
+});
+
+// Orden visual en celular: de arriba hacia abajo, como se ven en el árbol.
+const ramasMovil = [...ramas].sort((a, b) => a.f.p0[1] - b.f.p0[1]);
 ---
 
-<section id="habilidades" class="min-h-[60vh] border-t border-white/10 py-[96px]">
+<section id="habilidades" class="relative border-t border-white/10 pb-[72px] pt-[96px] lg:min-h-[100svh] lg:pb-[24px]" data-arbol>
   <div class="contenedor">
-    <p class="etiqueta"><span class="text-lima">01</span> Árbol de habilidades</p>
-    <p class="mt-[24px] max-w-[420px] text-blanco/50">En construcción (paso 3).</p>
+    <!-- Encabezado y leyenda -->
+    <div class="flex flex-wrap items-end justify-between gap-x-[56px] gap-y-[24px]" data-arbol-encabezado>
+      <div>
+        <p class="etiqueta"><span class="text-lima">01</span> Árbol de habilidades</p>
+        <h2
+          class="mt-[12px] font-display text-[clamp(36px,4.4vw,56px)] font-[380] leading-[1.05] tracking-[-0.03em]"
+          style="font-variation-settings: 'opsz' 144, 'SOFT' 30;"
+        >
+          Lo que sé, <span class="italic text-blanco/80" style="font-variation-settings: 'opsz' 144, 'SOFT' 100, 'WONK' 1;">y lo que crece</span>
+        </h2>
+      </div>
+
+      <dl class="grid gap-y-[6px] text-[14px] leading-[20px] sm:grid-cols-[auto_1fr] sm:gap-x-[14px]" aria-label="Leyenda">
+        <dt class="flex items-center gap-[9px] font-mono text-[12px] uppercase tracking-[0.04em]">
+          <span class="punto punto--base" aria-hidden="true"></span>Base sólida
+        </dt>
+        <dd class="mb-[6px] text-blanco/65 sm:mb-0">Lo hago sin ayuda y lo puedo explicar.</dd>
+        <dt class="flex items-center gap-[9px] font-mono text-[12px] uppercase tracking-[0.04em] text-blanco/75">
+          <span class="punto punto--crecimiento" aria-hidden="true"></span>En crecimiento
+        </dt>
+        <dd class="text-blanco/65">Lo usé en algo real y lo sigo aprendiendo.</dd>
+      </dl>
+    </div>
+
+    <!-- ===== Escritorio ===== -->
+    <div class="relative mt-[24px] hidden lg:block" style={`height:${ALTO}px`} data-arbol-marco>
+      <div
+        class="escenario absolute left-1/2 top-0 origin-top"
+        style={`width:${ANCHO}px;height:${ALTO}px;transform:translateX(-50%)`}
+        data-arbol-escenario
+      >
+        <svg viewBox={`0 0 ${ANCHO} ${ALTO}`} width={ANCHO} height={ALTO} class="absolute inset-0 overflow-visible" aria-hidden="true">
+          <defs>
+            {
+              ramas.map((rama) => (
+                <linearGradient id={`degradado-${rama.r}`} gradientUnits="userSpaceOnUse" x1={rama.f.p0[0]} y1={rama.f.p0[1]} x2={rama.f.p3[0]} y2={rama.f.p3[1]}>
+                  <stop offset="0" stop-color="#f5f7f2" stop-opacity=".85" />
+                  <stop offset=".72" stop-color="#f5f7f2" stop-opacity=".6" />
+                  <stop offset="1" stop-color="#b7d88c" />
+                </linearGradient>
+              ))
+            }
+            <filter id="brillo" x="-200%" y="-200%" width="500%" height="500%">
+              <feGaussianBlur stdDeviation="4" />
+            </filter>
+          </defs>
+
+          <!-- Suelo -->
+          <line x1="330" y1={SUELO + 0.5} x2="930" y2={SUELO + 0.5} stroke="#f5f7f2" stroke-opacity=".2" stroke-dasharray="2 6" />
+
+          <!-- Raíces -->
+          <g fill="none" stroke="#f5f7f2" stroke-opacity=".55" stroke-linecap="round">
+            <path data-raiz d="M630 600 C620 640 520 668 300 684" stroke-width="1.2" />
+            <path data-raiz d="M630 600 C640 640 740 668 960 684" stroke-width="1.2" />
+            <path data-raiz d="M626 612 C600 650 560 670 500 712" stroke-width=".8" stroke-opacity=".35" />
+            <path data-raiz d="M634 612 C660 650 700 670 760 712" stroke-width=".8" stroke-opacity=".35" />
+            <path data-raiz d="M630 604 C631 640 628 672 632 716" stroke-width=".8" stroke-opacity=".3" />
+          </g>
+
+          <!-- Tronco: se dibuja de abajo hacia arriba -->
+          <path data-tronco d={`M${TRONCO_X} ${SUELO} C${TRONCO_X - 3} 420 ${TRONCO_X + 3} 220 ${TRONCO_X} ${CIMA}`} fill="none" stroke="#f5f7f2" stroke-opacity=".9" stroke-width="1.6" stroke-linecap="round" />
+
+          <!-- Ramas y ramitas -->
+          {
+            ramas.map((rama) => (
+              <g data-rama={rama.r} data-altura={rama.altura}>
+                <path data-trazo-rama d={rama.d} fill="none" stroke={`url(#degradado-${rama.r})`} stroke-width="1.1" stroke-linecap="round" />
+                {rama.hojas.map((h, i) => (
+                  <path
+                    data-ramita={i}
+                    data-t={h.t}
+                    d={`M${h.bx} ${h.by} Q${h.bx + rama.f.lado * 2} ${(h.by + h.ay) / 2} ${h.ax} ${h.ay}`}
+                    fill="none"
+                    stroke="#f5f7f2"
+                    stroke-opacity=".45"
+                    stroke-width=".8"
+                  />
+                ))}
+                <g data-punta>
+                  <circle cx={rama.f.p3[0]} cy={rama.f.p3[1]} r="9" fill="#b7d88c" opacity=".35" filter="url(#brillo)" />
+                  <circle cx={rama.f.p3[0]} cy={rama.f.p3[1]} r="2.5" fill="#b7d88c" />
+                </g>
+              </g>
+            ))
+          }
+
+          <!-- Yema en la cima: el árbol sigue creciendo -->
+          <g data-yema>
+            <circle cx={TRONCO_X} cy={CIMA} r="10" fill="#b7d88c" opacity=".3" filter="url(#brillo)" />
+            <circle cx={TRONCO_X} cy={CIMA} r="3" fill="none" stroke="#b7d88c" stroke-width="1.2" />
+          </g>
+        </svg>
+
+        <!-- Nombres de las ramas, en la punta -->
+        {
+          ramas.map((rama) => (
+            <p
+              class:list={["etiqueta absolute w-[160px] -translate-y-1/2 !text-blanco/80", rama.f.lado < 0 ? "text-right" : "text-left"]}
+              style={rama.f.lado < 0 ? `right:${ANCHO - rama.f.p3[0] + 14}px;top:${rama.f.p3[1]}px` : `left:${rama.f.p3[0] + 14}px;top:${rama.f.p3[1]}px`}
+              data-nombre-rama={rama.r}
+            >
+              {rama.nombre}
+            </p>
+          ))
+        }
+
+        <!-- Raíces: la formación -->
+        <p class="raiz absolute text-right" style={`right:${ANCHO - 286}px;top:672px`} data-etiqueta-raiz>
+          <span class="etiqueta block !text-[11px] !leading-[16px]">Raíz</span>{arbol.raices[0]}
+        </p>
+        <p class="raiz absolute" style="left:974px;top:672px" data-etiqueta-raiz>
+          <span class="etiqueta block !text-[11px] !leading-[16px]">Raíz</span>{arbol.raices[1]}
+        </p>
+
+        <!-- Hojas -->
+        <ul aria-label="Habilidades">
+          {
+            ramas.map((rama) =>
+              rama.hojas.map((h, i) => (
+                <li
+                  class:list={["hoja absolute", h.arriba ? "hoja--arriba" : "hoja--abajo", `hoja--${h.alinear}`]}
+                  style={`left:${h.ax.toFixed(1)}px;top:${h.ay.toFixed(1)}px`}
+                  data-hoja-rama={rama.r}
+                  data-hoja={i}
+                >
+                  <button type="button" class:list={["pildora", `pildora--${h.estado}`]} aria-expanded="false" aria-controls={h.id}>
+                    <span class:list={["punto", `punto--${h.estado}`]} aria-hidden="true" />
+                    <span>{h.nombre}</span>
+                    <span class="sr-only">
+                      ({rama.nombre}, {estados[h.estado]})
+                    </span>
+                  </button>
+                  <div id={h.id} class="evidencia vidrio">
+                    <p class="flex items-center gap-[8px] font-mono text-[11px] uppercase tracking-[0.06em] text-blanco/70">
+                      <span class:list={["punto", `punto--${h.estado}`]} aria-hidden="true" />
+                      {estados[h.estado]}
+                    </p>
+                    <p class="mt-[8px] font-mono text-[11px] uppercase tracking-[0.06em] text-blanco/55">Dónde lo usé</p>
+                    <p class="mt-[2px] text-[14px] leading-[20px] text-blanco">{h.evidencia}</p>
+                    {h.enlace && (
+                      <a href={h.enlace} class="subrayado mt-[10px] inline-block text-[13px] text-lima">
+                        {textoEnlace(h.enlace)} →
+                      </a>
+                    )}
+                  </div>
+                </li>
+              )),
+            )
+          }
+        </ul>
+      </div>
+    </div>
+
+    <!-- ===== Celular ===== -->
+    <div class="relative mt-[48px] lg:hidden" data-arbol-movil>
+      <span class="absolute bottom-[60px] left-[6px] top-[6px] w-px origin-top bg-white/70" aria-hidden="true" data-tronco-movil></span>
+      <span class="absolute left-[2px] top-0 size-[9px] rounded-full border border-lima" aria-hidden="true"></span>
+
+      <ul aria-label="Habilidades por rama">
+        {
+          ramasMovil.map((rama) => (
+            <li class="relative pb-[36px] pl-[54px]" data-rama-movil>
+              <svg width="44" height="24" viewBox="0 0 44 24" class="absolute left-[6px] top-0" aria-hidden="true">
+                <path d="M0.5 22 C10 22 18 12 36 12" fill="none" stroke="#f5f7f2" stroke-opacity=".6" />
+                <circle cx="38" cy="12" r="2.5" fill="#b7d88c" />
+              </svg>
+              <h3 class="etiqueta !text-blanco/85">{rama.nombre}</h3>
+              <ul class="relative mt-[12px] flex flex-wrap gap-[8px]">
+                {rama.hojas.map((h) => (
+                  <li class="hoja hoja--movil">
+                    <button type="button" class:list={["pildora", `pildora--${h.estado}`]} aria-expanded="false" aria-controls={`${h.id}-m`}>
+                      <span class:list={["punto", `punto--${h.estado}`]} aria-hidden="true" />
+                      <span>{h.nombre}</span>
+                      <span class="sr-only">({estados[h.estado]})</span>
+                    </button>
+                    <div id={`${h.id}-m`} class="evidencia vidrio">
+                      <p class="flex items-center gap-[8px] font-mono text-[11px] uppercase tracking-[0.06em] text-blanco/70">
+                        <span class:list={["punto", `punto--${h.estado}`]} aria-hidden="true" />
+                        {h.nombre} · {estados[h.estado]}
+                      </p>
+                      <p class="mt-[6px] text-[14px] leading-[20px]">{h.evidencia}</p>
+                      {h.enlace && (
+                        <a href={h.enlace} class="subrayado mt-[8px] inline-block text-[13px] text-lima">
+                          {textoEnlace(h.enlace)} →
+                        </a>
+                      )}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </li>
+          ))
+        }
+      </ul>
+
+      <!-- Raíces -->
+      <div class="relative pl-[48px] pt-[12px]">
+        <svg width="44" height="60" viewBox="0 0 44 60" class="absolute left-0 top-[-12px]" aria-hidden="true">
+          <path d="M6.5 0 C6.5 20 14 34 36 40 M6.5 10 C4 30 2 44 6 60" fill="none" stroke="#f5f7f2" stroke-opacity=".5" />
+        </svg>
+        <p class="etiqueta">Raíces</p>
+        <ul class="mt-[6px] text-[15px] leading-[24px] text-blanco/80">
+          {arbol.raices.map((r) => <li>{r}</li>)}
+        </ul>
+      </div>
+    </div>
   </div>
 </section>
+
+<style>
+  /* Raíces del escritorio: texto chico, sobre el suelo */
+  .raiz {
+    width: 260px;
+    font-size: 14px;
+    line-height: 20px;
+    color: rgb(245 247 242 / 0.85);
+  }
+
+  /* ---------- Puntos de estado ---------- */
+  .punto {
+    flex: none;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+  }
+  .punto--base {
+    background: var(--color-lima);
+    box-shadow: 0 0 6px rgb(183 216 140 / 0.55);
+  }
+  .punto--crecimiento {
+    border: 1.5px solid var(--color-lima);
+  }
+
+  /* ---------- Hojas: píldoras de vidrio ---------- */
+  /*
+    Sin backdrop-filter a propósito: son 18 a la vez y detrás solo hay fondo negro,
+    así que el desenfoque no se notaría y le costaría rendimiento al celular.
+    El "vidrio" se logra con el borde fino y el reflejo interno de arriba.
+  */
+  .pildora {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    max-width: 196px;
+    padding: 5px 11px;
+    border: 1px solid rgb(255 255 255 / 0.22);
+    border-radius: 6px;
+    background: rgb(16 20 17 / 0.86);
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.14);
+    font-size: 13px;
+    line-height: 18px;
+    text-align: left;
+    color: var(--color-blanco);
+    cursor: pointer;
+    transition:
+      border-color 0.25s,
+      color 0.25s,
+      background-color 0.25s;
+  }
+  .pildora--crecimiento {
+    color: rgb(245 247 242 / 0.68);
+  }
+  .hoja:hover .pildora,
+  .pildora[aria-expanded="true"],
+  .pildora:focus-visible {
+    border-color: rgb(183 216 140 / 0.7);
+    color: var(--color-blanco);
+    background: rgb(22 30 24 / 0.95);
+  }
+
+  /* Posición respecto de la punta de su ramita */
+  .hoja {
+    z-index: 1;
+  }
+  .hoja:hover,
+  .hoja:focus-within,
+  .hoja.abierta {
+    z-index: 5;
+  }
+  .hoja--arriba {
+    transform: translate(-50%, -100%);
+  }
+  .hoja--abajo {
+    transform: translate(-50%, 0);
+  }
+
+  /* ---------- Tarjeta de evidencia ---------- */
+  .evidencia {
+    position: absolute;
+    z-index: 20;
+    width: 248px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateY(4px);
+    transition:
+      opacity 0.2s ease,
+      transform 0.2s ease,
+      visibility 0s 0.2s;
+  }
+  .hoja:hover .evidencia,
+  .hoja:focus-within .evidencia,
+  .hoja.abierta .evidencia {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: none;
+    transition-delay: 0s;
+  }
+  /* Las hojas de arriba abren la tarjeta hacia arriba; las de abajo, hacia abajo. */
+  .hoja--arriba .evidencia {
+    bottom: calc(100% + 8px);
+  }
+  .hoja--abajo .evidencia {
+    top: calc(100% + 8px);
+  }
+  .hoja--centro .evidencia {
+    left: 50%;
+    margin-left: -124px;
+  }
+  .hoja--izquierda .evidencia {
+    left: 0;
+  }
+  .hoja--derecha .evidencia {
+    right: 0;
+  }
+  /* Puente invisible para que el mouse pueda pasar de la píldora a la tarjeta */
+  .hoja--arriba::after,
+  .hoja--abajo::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 10px;
+  }
+  .hoja--arriba::after {
+    bottom: 100%;
+  }
+  .hoja--abajo::after {
+    top: 100%;
+  }
+
+  /* Celular: la tarjeta abre debajo de la lista de hojas de esa rama, a todo el ancho */
+  .hoja--movil {
+    position: static;
+  }
+  /* La rama con una tarjeta abierta se pone por encima de las que vienen después */
+  [data-rama-movil]:has(.abierta),
+  [data-rama-movil]:has(:focus-visible) {
+    z-index: 10;
+  }
+  .hoja--movil .evidencia {
+    top: calc(100% + 8px);
+    left: 0;
+    width: min(100%, 320px);
+  }
+  .hoja--movil:hover .evidencia {
+    /* en pantallas táctiles el :hover queda "pegado"; ahí solo abre al tocar */
+    opacity: 0;
+    visibility: hidden;
+  }
+  .hoja--movil:focus-within .evidencia,
+  .hoja--movil.abierta .evidencia {
+    opacity: 1;
+    visibility: visible;
+  }
+</style>
+
+<script>
+  import { animarArbol } from "../scripts/animaciones.js";
+
+  // ---------- Escala del escenario ----------
+  // El árbol está diseñado a 1260 × 720 px; acá se achica para que entre a lo ancho
+  // y también a lo alto (la sección queda fija mientras crece, así que tiene que verse entero).
+  const marco = document.querySelector("[data-arbol-marco]");
+  const escenario = document.querySelector("[data-arbol-escenario]");
+
+  function ajustarEscala() {
+    if (!marco || marco.offsetParent === null) return; // oculto en celular
+    // Alto libre cuando la sección está fija arriba: la pantalla menos el encabezado.
+    const disponibleAlto = window.innerHeight - marco.offsetTop - 24;
+    const k = Math.min(1, marco.clientWidth / 1260, Math.max(disponibleAlto, 360) / 720);
+    escenario.style.transform = `translateX(-50%) scale(${k})`;
+    marco.style.height = `${720 * k}px`;
+  }
+
+  ajustarEscala();
+  animarArbol(ajustarEscala);
+
+  // ---------- Hojas: abrir y cerrar la evidencia al tocar ----------
+  const hojas = document.querySelectorAll(".hoja");
+  const cerrarTodas = (excepto) =>
+    hojas.forEach((h) => {
+      if (h === excepto) return;
+      h.classList.remove("abierta");
+      h.querySelector("button").setAttribute("aria-expanded", "false");
+    });
+
+  hojas.forEach((hoja) => {
+    const boton = hoja.querySelector("button");
+    boton.addEventListener("click", () => {
+      const abrir = !hoja.classList.contains("abierta");
+      cerrarTodas(hoja);
+      hoja.classList.toggle("abierta", abrir);
+      boton.setAttribute("aria-expanded", String(abrir));
+    });
+  });
+  document.addEventListener("click", (e) => {
+    if (!e.target.closest(".hoja")) cerrarTodas();
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") cerrarTodas();
+  });
+</script>
