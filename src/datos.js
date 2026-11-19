@@ -13,7 +13,7 @@ export const persona = {
   resumen:
     "Estudiante de Ingeniería Informática con formación técnica en informática y conocimientos en desarrollo web, bases de datos, hardware y soporte técnico. Interés en desarrollarme profesionalmente en el área de tecnología, adquirir experiencia práctica y seguir fortaleciendo mis conocimientos mediante certificaciones y proyectos.",
 
-  frase: "Aprendo construyendo: mi primer sistema nació en la caja de un resto bar.",
+  frase: "Convierto procesos reales y desordenados en sistemas claros, pensados desde los datos.",
 
   // Opcional: ruta a una foto en /public (por ejemplo "/roberto.webp"). Si queda en null, no se muestra.
   foto: null,
@@ -174,8 +174,8 @@ export const proyectos = [
 ];
 
 /*
-  Trayectoria: experiencia y educación en una sola línea de tiempo, de lo más reciente
-  a lo más antiguo. "actual: true" marca lo que sigue en curso.
+  Trayectoria: una sola línea de tiempo con la experiencia arriba y la educación abajo,
+  cada grupo de lo más reciente a lo más antiguo. "actual: true" marca lo que sigue en curso.
 */
 export const trayectoria = [
   {
@@ -194,6 +194,20 @@ export const trayectoria = [
     ],
   },
   {
+    tipo: "Experiencia",
+    lugar: "Contraloría General de la República",
+    rol: "Pasante",
+    desde: "Dic. 2024",
+    hasta: "Feb. 2025",
+    tareas: [
+      "Registro y control de bienes patrimoniales",
+      "Manejo y organización de información",
+      "Uso de herramientas informáticas para el registro de datos",
+      "Trabajo siguiendo procedimientos establecidos",
+    ],
+  },
+  // TODO: preguntar a Roberto si suma Lo de Carmi Resto Bar como experiencia propia (rol y fecha de inicio).
+  {
     tipo: "Educación",
     lugar: "Universidad Autónoma de la Asunción",
     rol: "Ingeniería en Informática, énfasis en Sistemas",
@@ -210,20 +224,6 @@ export const trayectoria = [
     hasta: "Oct. 2025",
     ciudad: "Asunción",
   },
-  {
-    tipo: "Experiencia",
-    lugar: "Contraloría General de la República",
-    rol: "Pasante",
-    desde: "Dic. 2024",
-    hasta: "Feb. 2025",
-    tareas: [
-      "Registro y control de bienes patrimoniales",
-      "Manejo y organización de información",
-      "Uso de herramientas informáticas para el registro de datos",
-      "Trabajo siguiendo procedimientos establecidos",
-    ],
-  },
-  // TODO: preguntar a Roberto si suma Lo de Carmi Resto Bar como experiencia propia (rol y fecha de inicio).
 ];
 
 export const referencias = "Referencias disponibles a pedido";
@@ -319,8 +319,8 @@ export const textos = {
   },
   trayectoria: {
     etiqueta: "Trayectoria",
-    titulo: "Trabajo",
-    cursiva: "y estudio",
+    titulo: "Experiencia",
+    cursiva: "y educación",
     idiomas: "Idiomas",
   },
   certificados: {
@@ -340,6 +340,7 @@ export const textos = {
     copiado: "Copiado",
     volver: "Volver arriba",
     hecho: "Hecho con Astro, Tailwind y GSAP",
+    lema: "Dream big",
   },
 };
 

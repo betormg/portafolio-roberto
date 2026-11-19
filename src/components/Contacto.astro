@@ -79,7 +79,13 @@ const anio = new Date().getFullYear();
     <!-- Pie -->
     <footer class="mt-[144px] flex flex-wrap items-center justify-between gap-x-[28px] gap-y-[12px] border-t border-white/10 pt-[20px]">
       <p class="etiqueta">{persona.nombre} {persona.apellido} · {anio}</p>
-      <p class="etiqueta hidden md:block">{tx.hecho}</p>
+      <p class="etiqueta flex items-center gap-[14px]">
+        <span
+          class="font-display text-[20px] normal-case italic leading-none tracking-normal text-blanco"
+          style="font-variation-settings: 'opsz' 72, 'SOFT' 100, 'WONK' 1;">{tx.lema}</span
+        >
+        <span class="hidden md:inline">· {tx.hecho}</span>
+      </p>
       <a href="#inicio" class="etiqueta subrayado transition-colors hover:!text-blanco">{tx.volver} ↑</a>
     </footer>
   </div>
