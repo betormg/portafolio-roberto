@@ -51,9 +51,9 @@ export const arbol = {
       hojas: [
         { nombre: "HTML5", estado: "base", evidencia: "Mi CV y la web de Lo de Carmi" },
         { nombre: "CSS", estado: "base", evidencia: "Mi CV y la web de Lo de Carmi" },
-        { nombre: "JavaScript", estado: "crecimiento", evidencia: "El sistema de pedidos de Lo de Carmi", enlace: "#proyecto-lo-de-carmi" },
+        { nombre: "JavaScript", estado: "crecimiento", evidencia: "El sistema de pedidos y la landing de Lo de Carmi", enlace: "#proyecto-landing-lo-de-carmi" },
         { nombre: "Astro y Tailwind", estado: "crecimiento", evidencia: "Este portafolio" },
-        { nombre: "GSAP", estado: "crecimiento", evidencia: "Este portafolio: el árbol que estás viendo" },
+        { nombre: "GSAP", estado: "crecimiento", evidencia: "Este portafolio (el árbol que estás viendo) y la landing de Lo de Carmi", enlace: "#proyecto-landing-lo-de-carmi" },
       ],
     },
     {
@@ -107,7 +107,7 @@ export const proyectos = [
     // Capturas: [{ src: "/capturas/caja.webp", alt: "...", ancho: 1280, alto: 800 }], siempre con datos de prueba.
     capturas: [], // TODO: capturas en WebP con datos de prueba, en /public/capturas
     estado: "Versión 1 terminada",
-    link: "", // TODO: link del repositorio (hoy es privado)
+    link: "https://github.com/betormg/Ticket-System-Lo-de-Carmi-Resto-Bar", // repositorio
     grupal: false,
 
     // Modelo de datos real de la base en Supabase (se dibuja en el marco del proyecto).
@@ -164,12 +164,33 @@ export const proyectos = [
     },
   },
   {
-    // TODO: proyecto nuevo que reemplaza al del Complejo Santa Teresa. Completar cuando esté definido.
-    id: "proyecto-2",
-    enProceso: true,
-    titulo: "Segundo proyecto",
-    queHace: "Un proyecto de bases de datos que estoy preparando. Pronto va a estar acá.",
-    estado: "En proceso",
+    id: "proyecto-landing-lo-de-carmi",
+    titulo: "Web pública de Lo de Carmi Resto Bar",
+    problema: "Que la gente del barrio y las empresas puedan ver el menú del día y pedir por WhatsApp sin llamar.",
+    queHace:
+      "Landing cuyo objetivo es que la gente escriba por WhatsApp para pedir. El menú del día se lee de la base del sistema de caja.",
+    funciones: [
+      "Menú del día con selector de guarnición por plato",
+      "Combos prepagos de viandas",
+      "Formulario que arma el mensaje y abre WhatsApp (vianda, combo o corporativo)",
+      "Información para empresas",
+      "Preguntas frecuentes y ubicación",
+      "Metadatos para buscadores y para compartir",
+      'Respeta "reducir movimiento"',
+    ],
+    tecnologias: ["HTML", "CSS", "JavaScript", "GSAP", "ScrollTrigger", "Lenis", "Supabase"],
+    capturas: [], // TODO: capturas en WebP en /public/capturas (celular y escritorio)
+    estado: "Publicada",
+    sitio: "https://lo-de-carmi.vercel.app",
+    link: "https://github.com/betormg/lo-de-carmi-landing", // repositorio
+    grupal: false,
+
+    // Recorrido del menú hasta el pedido (se dibuja en el marco del proyecto).
+    flujo: {
+      figura: "Fig. 03 — Del menú al pedido",
+      fuente: "Supabase · WhatsApp",
+      pasos: ["Supabase", "web_menu_hoy()", "Menú de la web", "WhatsApp"],
+    },
   },
 ];
 
@@ -311,8 +332,8 @@ export const textos = {
     miParte: "Mi parte",
     funciones: "Funciones",
     tecnologias: "Tecnologías",
-    verRepositorio: "Ver repositorio",
-    repositorioPrivado: "Repositorio privado",
+    verSitio: "Ver sitio",
+    repositorio: "Repositorio público",
     grupal: "Proyecto grupal",
     figura: "Fig. 02 — Modelo de datos",
     figuraFuente: "Supabase · PostgreSQL",

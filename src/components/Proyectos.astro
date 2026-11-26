@@ -108,12 +108,15 @@ const indice = (i) => `P—${String(i + 1).padStart(2, "0")}`;
               </dl>
 
               <div class="mt-[36px] flex flex-wrap items-center gap-x-[28px] gap-y-[12px] border-t border-white/10 pt-[16px]">
-                {p.link ? (
-                  <a href={p.link} target="_blank" rel="noopener noreferrer" class="subrayado text-[15px] text-blanco">
-                    {tx.verRepositorio}<span class="sr-only"> ({textos.nuevaPestana})</span> ↗
+                {p.sitio && (
+                  <a href={p.sitio} target="_blank" rel="noopener noreferrer" class="subrayado text-[15px] text-blanco">
+                    {tx.verSitio}<span class="sr-only"> ({textos.nuevaPestana})</span> ↗
                   </a>
-                ) : (
-                  <span class="etiqueta">{tx.repositorioPrivado}</span>
+                )}
+                {p.link && (
+                  <a href={p.link} target="_blank" rel="noopener noreferrer" class="subrayado text-[15px] text-blanco">
+                    {tx.repositorio}<span class="sr-only"> ({textos.nuevaPestana})</span> ↗
+                  </a>
                 )}
                 {p.nota && <p class="text-[14px] leading-[20px] text-blanco/60">{p.nota}</p>}
               </div>
@@ -186,6 +189,44 @@ const indice = (i) => `P—${String(i + 1).padStart(2, "0")}`;
                 <figcaption class="mt-[12px] text-[14px] leading-[20px] text-blanco/60">
                   {p.modelo.leyenda}
                 </figcaption>
+              </figure>
+            )}
+
+            <!-- Marco: recorrido de los datos, solo los nombres de cada paso (proyectos sin modelo de datos) -->
+            {p.flujo && (
+              <figure class="lg:col-span-7 lg:col-start-6 lg:pt-[48px]">
+                <div class="vidrio vidrio--blanco relative p-[14px] sm:p-[21px]">
+                  <header class="flex flex-wrap items-baseline justify-between gap-x-[14px] font-mono text-[11px] uppercase tracking-[0.06em] text-tinta/70">
+                    <span>{p.flujo.figura}</span>
+                    <span>{p.flujo.fuente}</span>
+                  </header>
+
+                  <ol class="mt-[14px] grid gap-[6px]">
+                    {p.flujo.pasos.map((paso, n) => (
+                      <Fragment>
+                        <li class="flex items-center gap-[10px] rounded-[4px] bg-tinta px-[10px] py-[7px] font-mono text-[12px] leading-[20px] text-blanco">
+                          <span class="text-[10px] tabular-nums text-blanco/60">{String(n + 1).padStart(2, "0")}</span>
+                          {paso}
+                        </li>
+                        {n < p.flujo.pasos.length - 1 && (
+                          <li class="text-center font-mono text-[12px] leading-[14px] text-tinta/50" aria-hidden="true">
+                            ↓
+                          </li>
+                        )}
+                      </Fragment>
+                    ))}
+                  </ol>
+                </div>
+
+                {p.capturas?.length > 0 && (
+                  <ul class="mt-[14px] grid gap-[14px] sm:grid-cols-2">
+                    {p.capturas.map((c) => (
+                      <li class="overflow-hidden rounded-[8px] border border-white/20 bg-white/[.04] p-[7px]">
+                        <img src={c.src} alt={c.alt} width={c.ancho} height={c.alto} loading="lazy" decoding="async" class="block h-auto w-full rounded-[4px]" />
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </figure>
             )}
           </article>
