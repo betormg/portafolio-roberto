@@ -291,7 +291,7 @@ export const contacto = {
   telefono: "+595 994 122 691",
   whatsapp: "https://wa.me/595994122691",
   github: "https://github.com/betormg",
-  linkedin: "https://www.linkedin.com/in/roberto-mendoza-7092863a2",
+  linkedin: "https://www.linkedin.com/in/robertormg",
 };
 
 /*
